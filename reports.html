@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>Attendance Report Management</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<!--link href="cssmod.css" rel="stylesheet" media="screen"-->
+  <!--link href="css/flat-ui.css" rel="stylesheet" media="screen"-->
+  <link href="sandbox.css" rel="stylesheet" media="screen">
+</head>
+
+
+<body>
+<nav class="navbar navbar-default " role="navigation">
+ 
+  <!--div class="nav-content"--> <!--nav content-->
+  
+  <div class="row"> <!--navbar row-->
+  <div class="col-lg-1"></div>
+  <div class="col-lg-11"> <!--column 1-->
+  <div class="navbar-header"><!--nav bar header-->
+    <a class="navbar-brand" href="#"><strong>OAL</strong> Incident Report Management</a>
+  </div> <!--nav bar header end-->
+ 
+  <ul class="nav navbar-nav ">
+    <li><a href="#">
+      <span class="glyphicon glyphicon-edit"></span> 
+      &nbsp Report Incident</a></li>
+    <li><a href="#">
+      <span class="glyphicon glyphicon-asterisk"></span>
+      &nbsp Current Open Incidents</a></li>
+    <li class="active"><a href="#">
+      <span class="glyphicon glyphicon-folder-open"></span> 
+      &nbsp View Reports</a></li>
+  </ul>
+  </div> <!--column 1-->
+  </div> <!--navbar row end-->
+  <!--/div--> <!--nav content end-->
+</nav>
+
+
+<div class="container container-pad">
+<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
+
+  <div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
+     <h4><span class="glyphicon  glyphicon-folder-open"></span>&nbsp View Reports</h4>
+  </div> <!--panel heading end-->
+
+  <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
+
+  <div> <!--row1-->
+    <form class="form-horizontal">
+      <div class="form-group">
+        <input type="text" class="form-control col-sm-2" placeholder="Type here filter reports">
+        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-3">
+        <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+      </div>
+  </div>
+    </form>
+  </div> <!--end of row1-->
+
+  </div> <!--panel body end-->
+  </div> <!--internal container end-->
+</div> <!-- /main container end -->
+</body>
+
+
+<script src="jquery.js"> </script>
+<script src="js/bootstrap.min.js"> </script>
+<script src="incident.js"> </script>
+
+</html>

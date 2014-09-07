@@ -86,20 +86,26 @@
               Disiplinary Meeting: {{incident.meeting}}
             </td>
           </tr>
-          <tr>
-            <td  colspan="3">
-              {{incident.comments[0].subject}}
-            </td>
-            <td>
-              by: {{incident.comments[0].by}}  
-              -- {{incident.comments[0].date | date: 'h:mma -- MM-dd-yyyy'}}
-            </td>
-          </tr>
-          <tr>
-            <td  colspan="4">
-              {{incident.comments[0].body}}
-            </td>
-          </tr>
+          
+          <tbody ng-repeat="comment in incident.comments | orderBy:'date'" > 
+            <tr> 
+             <td colspan="4"></td> 
+            <tr>
+            <tr>
+              <td  colspan="3">
+                {{comment.subject}}
+              </td>
+              <td>
+                by: {{comment.by}}  
+                -- {{comment.date | date: 'h:mma -- MM-dd-yyyy'}}
+              </td>
+            </tr>
+            <tr>
+              <td  colspan="4">
+                {{comment.body}}
+              </td>
+            </tr>
+          </tbody>
         </table>
 
       </div> <!-- end of column 3-->

@@ -108,32 +108,24 @@ app.controller('Ctrl', function($scope) {
 });
 
 app.filter('toStandardTime', function() {
-  var toStandardTime = function(input) {
-  	var out, milTmRegex; 
+  var toStandardTime;
+  
+  toStandardTime = function(milTime) {
+  	var out, milTmRegex, hours24, hours, amPm, minutes; 
   	milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
+  	
+  	if (milTmRegex.test(milTime)) {
+  		hours24 = parseInt(milTime.slice(0,2));
+  		hours = ((hours24 + 11) % 12) + 1;
+  		amPm = hours24 > 11 ? ' PM' : ' AM';
+  		minutes = milTime.slice(3,5);
+    	
+    	return hours + ':' + minutes + amPm;
 
-  	if (milTmRegex.test(input)) {
-	  	out = input.slice(0,2);
-	  	out = parseInt(out); 
-	  	if(out > 12) {
-	  		out = out - 12; 
-	  		out = out + input.slice(2,5) +' PM';
-	  	} else if (out === 12) {
-	  		out = out + input.slice(2,5) +' PM'; 
-	  	} else if(out === 0) {
-	  		out = 12;
-	  		out = out + input.slice(2,5) +' AM'; 
-	  	} else {
-	  		out = out + input.slice(2,5) +' AM'; 
-	  	}
-
-
-  	} else {
-  		out = input; 
+	  } else {
+  		return miltime; 
   	}
+ };
 
-  	return out;
-  };
-
-    return  toStandardTime; 
+ return toStandardTime; 
 });

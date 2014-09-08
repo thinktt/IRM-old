@@ -55,7 +55,8 @@ function creatComment() {
 	
 	var comment = {
 		by: 'Tobias',
-		date: (new Date()),
+		date: '2014-09-07',
+		time: '15:00',
 		subject: 'Initial Comment',
 		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.' 
 	};
@@ -66,7 +67,7 @@ function creatComment() {
 var comments = [];
 var i =0;
 
-for(i=0; i<10; i++) {
+for(i=0; i<3; i++) {
 	comments[i] = creatComment(); 
 }
 
@@ -76,7 +77,7 @@ var app = angular.module("app", ["xeditable"]);
 app.run(function(editableOptions, editableThemes) {
   editableThemes.bs3.inputClass = 'input-sm';
   editableThemes.bs3.buttonsClass = 'btn-sm';
-  //editableOptions.theme = 'bs3';
+  editableOptions.theme = 'bs3';
 });
 
 app.controller('Ctrl', function($scope) {
@@ -85,7 +86,7 @@ app.controller('Ctrl', function($scope) {
 		reportedBy: "Tobias",
 		userID: "thinktt",
 		date: (new Date()),
-
+		time: (new Date().getTime()),
 		studentWorker: "Bob",
 		schedulerID: 652,
 		lab: 'BLOC', //SCC, Pool, WCL
@@ -104,4 +105,35 @@ app.controller('Ctrl', function($scope) {
 		meeting: 'Pending', //if not pending date goes here
 	};
 
+});
+
+app.filter('toStandardTime', function() {
+  var toStandardTime = function(input) {
+  	var out, milTmRegex; 
+  	milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
+
+  	if (milTmRegex.test(input)) {
+	  	out = input.slice(0,2);
+	  	out = parseInt(out); 
+	  	if(out > 12) {
+	  		out = out - 12; 
+	  		out = out + input.slice(2,5) +' PM';
+	  	} else if (out === 12) {
+	  		out = out + input.slice(2,5) +' PM'; 
+	  	} else if(out === 0) {
+	  		out = 12;
+	  		out = out + input.slice(2,5) +' AM'; 
+	  	} else {
+	  		out = out + input.slice(2,5) +' AM'; 
+	  	}
+
+
+  	} else {
+  		out = input; 
+  	}
+
+  	return out;
+  };
+
+    return  toStandardTime; 
 });

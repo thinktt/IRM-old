@@ -165,9 +165,10 @@
                   </span>
                 </td>
                 <td> 
-                  <span editable-text="comment.by"> 
-                    by: {{comment.by}}  
-                  </span>
+                   <div editable-select="comment.by" 
+                      e-ng-options="leader.name as leader.name for leader in leaders">
+                      by: {{ comment.by }}
+                   </div>
                 </td>
                 <td>
                   <span editable-date="comment.date">                
@@ -198,7 +199,7 @@
               </tr>
               <tr>
                 <td  colspan="5">
-                  <span editable-textarea="comment.body"  e-rows="7" e-cols="100">
+                  <span editable-textarea="comment.body"  e-rows="7" e-cols="200">
                     <pre>{{comment.body}}</pre>
                   </span>
                 </td>

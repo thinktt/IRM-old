@@ -119,30 +119,6 @@ app.controller('Ctrl', function($scope) {
 });
 
 
-/*app.controller('SelectLocalCtrl', function($scope, $filter) {
-  
-  //$scope.incident.reportedBy = 'Cynthia'; 
-
-  $scope.leaders = [
-    {name: 'Tobias'},
-    {name: 'Cynthia'} ,
-    {name: 'Lauren'} ,
-    {name: 'Ryan'} ,
-    {name: 'Jeremiah'},
-    {name: 'John'},
-    {name: 'Nne'}
-  ];
-
-
-  /*$scope.showLeader = function() {
-  	var selected = $filter('filter')($scope.leaders, {name: $scope.incident.reportedBy});
-    var out = ($scope.incident.reportedBy && selected.length) ? selected[0].name : 'Not set';
- 	console.log($scope.incident.reportedBy);
-  	return out; 
-  };
-});*/
-
-
 app.filter('toStandardTime', function() {
   var toStandardTime;
   

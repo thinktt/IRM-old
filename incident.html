@@ -7,210 +7,243 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <link href="sandbox.css" rel="stylesheet" media="screen">
-  <link href="css/xeditable.css" rel="stylesheet">
-  <script src="js/angular.min.js"></script>
-  <script src="js/xeditable.min.js"></script>
-  <!--script src="js/bootstrap.min.js"> </script-->
-  <script src="incident.js"> </script>
+	<link href="sandbox.css" rel="stylesheet" media="screen">
+	<link href="css/xeditable.css" rel="stylesheet">
+	<script src="js/angular.min.js"></script>
+	<script src="js/xeditable.min.js"></script>
+	<!--script src="js/bootstrap.min.js"> </script-->
+	<script src="incident.js"> </script>
 </head>
 
 
 <body>
 <nav class="navbar navbar-default " role="navigation">
  
-  <!--div class="nav-content"--> <!--nav content-->
-  
-  <div class="row"> <!--navbar row-->
-  <div class="col-lg-1"></div>
-  <div class="col-lg-11"> <!--column 1-->
-  <div class="navbar-header"><!--nav bar header-->
-    <a class="navbar-brand" href="#"><strong>OAL</strong> Incident Report Management</a>
-  </div> <!--nav bar header end-->
+	<!--div class="nav-content"--> <!--nav content-->
+	
+	<div class="row"> <!--navbar row-->
+	<div class="col-lg-1"></div>
+	<div class="col-lg-11"> <!--column 1-->
+	<div class="navbar-header"><!--nav bar header-->
+		<a class="navbar-brand" href="#"><strong>OAL</strong> Incident Report Management</a>
+	</div> <!--nav bar header end-->
  
-  <ul class="nav navbar-nav ">
-    <li><a href="#">
-      <span class="glyphicon glyphicon-edit"></span> 
-      &nbsp Report Incident</a></li>
-    <li class="active"><a href="#">
-      <span class="glyphicon glyphicon-asterisk"></span>
-      &nbsp Current Open Incidents</a></li>
-    <li><a href="#">
-      <span class="glyphicon glyphicon-folder-open"></span> 
-      &nbsp View Reports</a></li>
-  </ul>
-  </div> <!--column 1-->
-  </div> <!--navbar row end-->
-  <!--/div--> <!--nav content end-->
+	<ul class="nav navbar-nav ">
+		<li><a href="#">
+			<span class="glyphicon glyphicon-edit"></span> 
+			&nbsp Report Incident</a></li>
+		<li class="active"><a href="#">
+			<span class="glyphicon glyphicon-asterisk"></span>
+			&nbsp Current Open Incidents</a></li>
+		<li><a href="#">
+			<span class="glyphicon glyphicon-folder-open"></span> 
+			&nbsp View Reports</a></li>
+	</ul>
+	</div> <!--column 1-->
+	</div> <!--navbar row end-->
+	<!--/div--> <!--nav content end-->
 </nav>
 
 
 <div class="container container-pad">
-  <div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
+	<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
 
-    <div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
-      <h4><span class="glyphicon  glyphicon-asterisk"></span>&nbsp Current Open Incidents</h4>
-    </div> <!--panel heading end-->
+		<div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
+			<h4><span class="glyphicon  glyphicon-asterisk"></span>&nbsp Current Open Incidents</h4>
+		</div> <!--panel heading end-->
 
-   <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
+	 <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
 
-    <div> <!--row1-->
-      <div class="col-lg-12" ng-controller="Ctrl"> <!--column 1-->
-        
-        <form editable-form name="ef" class="hidden"> 
-          <table class="table table-bordered table-condensed">
-            <tr>
-              <td editable-text="incident.studentWorker">
-                <span>
-                  {{incident.studentWorker}}
-                </span>
-              </td>
-              <td>
-                <span editable-text="incident.type">
-                  {{incident.type}}
-                </span>
-              </td>
-              <td>
-                <span 
-                  class="glyphicon glyphicon-edit pull-right"
-                  ng-click="ef.$show()" 
-                  ng-hide="ef.$visible"
-                ></span> 
-                <span
-                  ng-show="ef.$visible"
-                  ng-disabled="ef.$waiting" 
-                  ng-click="ef.$submit()"
-                  class="glyphicon glyphicon-ok pull-right" 
-                >save</span> 
-                <span 
-                  ng-show="ef.$visible"
-                  ng-disabled="ef.$waiting"
-                  ng-click="ef.$cancel()"
-                  class="glyphicon glyphicon-remove pull-right" 
-                >cancel &nbsp;</span> 
-              </td>
-            </tr>
-          </table>
-        </form>
-        
-        
-        <table class="table table-bordered table-condensed">
-          <tbody>
-            <tr> 
-              <td>SW: 
-                {{incident.studentWorker}}
-              </td>
-              <td>
-                ID: {{incident.lab}}  {{incident.schedulerID}}
-              </td>
-              <td></td>
-              <td>
-                <span 
-                  class="glyphicon glyphicon-edit pull-right"
-                  ng-click="ei.$show()" 
-                  ng-hide="ei.$visible"
-                ></span> 
-                <span
-                  ng-show="ei.$visible"
-                  ng-disabled="ei.$waiting" 
-                  ng-click="ei.$submit()"
-                  class="glyphicon glyphicon-ok pull-right" 
-                >save</span> 
-                <span 
-                  ng-show="ei.$visible"
-                  ng-disabled="ei.$waiting"
-                  ng-click="ei.$cancel()"
-                  class="glyphicon glyphicon-remove pull-right" 
-                >cancel &nbsp;</span> 
-              </td>
-            
-            </tr>
-            <tr> 
-              <td>
-                <span editable-text="incident.type"> 
-                  {{incident.type}} &nbsp; <br>
-                </span>
-                <span editable-text="incident.lab">
-                  Lab: {{incident.lab}} <br>
-                </span>
-                <span editable-text="incident.station">  
-                  Station: {{incident.station}} 
-                </span>
-                
-              </td>
-              <td>
-                {{incident.date | date:'MMMM dd, yyyy'}} <br>
-                Shift Start: {{incident.shiftStart | date:'h:mma'}} <br>
-                Arrival Time: {{incident.shiftArrive | date: 'h:mma'}}
-              </td>
-              <td>
-                Reason given: 
-                {{incident.reason}} 
-              </td> 
-              <td>
-                Reported by: {{incident.reportedBy}} <br>
-                Status: {{incident.status}} <br> 
-                Disiplinary Meeting: {{incident.meeting}}
-              </td>
-            </tr>
-          </tbody>
-          </table>
+		<div> <!--row1-->
+			<div class="col-lg-12" ng-controller="Ctrl"> <!--column 1-->
+				
+				<form editable-form name="ef" class=""> 
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td >
+								<span>
+									{{incident.studentWorker}}
+								</span>
+							</td>
+							<td>
+								<span editable-text="incident.type">
+									{{incident.type}}
+								</span>
+							</td>
+							<td>
+								<span 
+									class="glyphicon glyphicon-edit pull-right"
+									ng-click="ef.$show()" 
+									ng-hide="ef.$visible"
+								></span> 
+								<span
+									ng-show="ef.$visible"
+									ng-disabled="ef.$waiting" 
+									ng-click="ef.$submit()"
+									class="glyphicon glyphicon-ok pull-right" 
+								>save</span> 
+								<span 
+									ng-show="ef.$visible"
+									ng-disabled="ef.$waiting"
+									ng-click="ef.$cancel()"
+									class="glyphicon glyphicon-remove pull-right" 
+								>cancel &nbsp;</span> 
+							</td>
+						</tr>
+					</table>
+				</form>
+				
+				
+				<form editable-form name="ei"> 
+					<table class="table table-bordered table-condensed">
+						<tbody>
+							<tr> 
+								<td >
+									SW:
+									<span editable-text="incident.studentWorker">
+										{{incident.studentWorker}}
+									</span>
+								</td>
+								<td>
+									From:
+									<span editable-text="incident.lab">
+										 {{incident.lab}}  
+									</span>
+								</td>
+								<td>
+									ID: 
+									<span editable-text="incident.schedulerID">
+										{{incident.schedulerID}}
+									</span>
+								</td>
+								<td>
+									<span 
+										class="glyphicon glyphicon-edit pull-right"
+										ng-click="ei.$show()" 
+										ng-hide="ei.$visible"
+									></span> 
+									<span
+										ng-show="ei.$visible"
+										ng-disabled="ei.$waiting" 
+										ng-click="ei.$submit()"
+										class="glyphicon glyphicon-ok pull-right" 
+									>save</span> 
+									<span 
+										ng-show="ei.$visible"
+										ng-disabled="ei.$waiting"
+										ng-click="ei.$cancel()"
+										class="glyphicon glyphicon-remove pull-right" 
+									>cancel &nbsp;</span> 
+								</td>
+							
+							</tr>
+							<tr> 
+								<td>
+									<span editable-text="incident.type"> 
+										{{incident.type}} 
+									</span> <br>
+									<span editable-text="incident.lab">
+										Lab: {{incident.lab}} 
+									</span> <br>
+									<span editable-text="incident.station">  
+										Station: {{incident.station}} 
+									</span>
+									
+								</td>
+								<td>
+									<span editable-date="incident.date">
+										{{incident.date | date:'MMMM dd, yyyy'}} 
+									</span><br>
+									Shift Start: 
+									<span editable-time="incident.shiftStart">
+										{{incident.shiftStart | date:'h:mma'}} 
+									</span><br>
+									Arrival Time:
+									<span editable-time="incident.shiftArrive">
+										 {{incident.shiftArrive | date: 'h:mma'}}
+									</span>
+								</td>
+								<td>
+									Reason given:
+									<span editable-text="incident.reason">
+										{{incident.reason}} 
+									</span> 
+								</td> 
+								<td>
+									Reported by: 
+									 <span editable-select="incident.reportedBy" 
+											e-ng-options="leader.name as leader.name for leader in leaders">
+											{{ incident.reportedBy }}
+									 </span></br>
+									Status: 
+									<span editable-text="incident.status">
+										{{incident.status}} 
+									</span><br> 
+									Disiplinary Meeting: 
+									<span editable-text="incident.meeting">
+										{{incident.meeting}}
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					</form>
 
-          <form editable-form name="ec" ng-repeat="comment in incident.comments | orderBy:'date'">   
-            <table class="table table-bordered table-condensed">
-              <tr>
-                <td  colspan="3">
-                  <span editable-text="comment.subject">
-                    {{comment.subject}}
-                  </span>
-                </td>
-                <td> 
-                   <div editable-select="comment.by" 
-                      e-ng-options="leader.name as leader.name for leader in leaders">
-                      by: {{ comment.by }}
-                   </div>
-                </td>
-                <td>
-                  <span editable-date="comment.date">                
-                    {{comment.date | date: 'MM-dd-yyyy'}}
-                  </span>
-                  <span editable-time="comment.time"  e-minute-step="10">                
-                    {{comment.time | toStandardTime}}
-                  </span>
+					<form editable-form name="ec" ng-repeat="comment in incident.comments | orderBy:'date'">   
+						<table class="table table-bordered table-condensed">
+							<tr>
+								<td  colspan="3">
+									<span editable-text="comment.subject">
+										{{comment.subject}}
+									</span>
+								</td>
+								<td> 
+									 <div editable-select="comment.by" 
+											e-ng-options="leader.name as leader.name for leader in leaders">
+											by: {{ comment.by }}
+									 </div>
+								</td>
+								<td>
+									<span editable-date="comment.date">                
+										{{comment.date | date: 'MM-dd-yyyy'}}
+									</span>
+									<span editable-time="comment.time"  e-minute-step="10">                
+										{{comment.time | toStandardTime}}
+									</span>
 
-                  <span 
-                    class="glyphicon glyphicon-edit pull-right"
-                    ng-click="ec.$show()" 
-                    ng-hide="ec.$visible"
-                  ></span> 
-                  <span
-                    ng-show="ec.$visible"
-                    ng-disabled="ec.$waiting" 
-                    ng-click="ec.$submit()"
-                    class="glyphicon glyphicon-ok pull-right" 
-                  >save</span> 
-                  <span 
-                    ng-show="ec.$visible"
-                    ng-disabled="ec.$waiting"
-                    ng-click="ec.$cancel()"
-                    class="glyphicon glyphicon-remove pull-right" 
-                  >cancel &nbsp;</span> 
-                </td>
-              </tr>
-              <tr>
-                <td  colspan="5">
-                  <span editable-textarea="comment.body"  e-rows="7" e-cols="200">
-                    <pre>{{comment.body}}</pre>
-                  </span>
-                </td>
-              </tr>
-            </table>
-        </form>
+									<span 
+										class="glyphicon glyphicon-edit pull-right"
+										ng-click="ec.$show()" 
+										ng-hide="ec.$visible"
+									></span> 
+									<span
+										ng-show="ec.$visible"
+										ng-disabled="ec.$waiting" 
+										ng-click="ec.$submit()"
+										class="glyphicon glyphicon-ok pull-right" 
+									>save</span> 
+									<span 
+										ng-show="ec.$visible"
+										ng-disabled="ec.$waiting"
+										ng-click="ec.$cancel()"
+										class="glyphicon glyphicon-remove pull-right" 
+									>cancel &nbsp;</span> 
+								</td>
+							</tr>
+							<tr>
+								<td  colspan="5">
+									<span editable-textarea="comment.body"  e-rows="7" e-cols="200">
+										<pre>{{comment.body}}</pre>
+									</span>
+								</td>
+							</tr>
+						</table>
+				</form>
 
-      </div> <!-- end of column 3-->
-    </div> <!--end of row1-->
+			</div> <!-- end of column 3-->
+		</div> <!--end of row1-->
 
-  </div> <!--panel body end-->
+	</div> <!--panel body end-->
 </div> <!--internal container end-->
 </div> <!-- /main container end -->
 </body>

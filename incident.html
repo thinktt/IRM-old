@@ -209,7 +209,8 @@
 						<table class="table table-bordered table-condensed">
 							<tr>
 								<td  colspan="3">
-									<span editable-text="comment.subject">
+									<span editable-text="comment.subject"
+										e-tabindex=1>
 										{{comment.subject}}
 									</span>
 								</td>
@@ -248,7 +249,10 @@
 							</tr>
 							<tr>
 								<td  colspan="5">
-									<span editable-textarea="comment.body"  e-rows="7" e-cols="200">
+									<span editable-textarea="comment.body"  
+										e-rows="7" 
+										e-cols="200"
+										e-tabindex=2>
 										<pre>{{comment.body}}</pre>
 									</span>
 								</td>
@@ -265,7 +269,7 @@
 								class="glyphicon glyphicon-plus pull-right"> 
 							</span> 
 							<span class="pull-right">
-								Add Comment &nbsp;
+								New Comment &nbsp;
 							</span> 
 							</td>
 						</tr>

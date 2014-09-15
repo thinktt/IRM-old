@@ -180,8 +180,8 @@ app.controller('Ctrl', function($scope) {
 			by: 'Tobias',
 			date: '2014-09-07',
 			time: '15:00',
-			subject: 'Tester Comment',
-			body: 'He quit like a rock star!',
+			subject: '',
+			body: '',
 			new: true 
 		};
 

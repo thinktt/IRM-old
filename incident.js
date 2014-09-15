@@ -33,7 +33,7 @@ var incident = {
 	userID: "thinktt",
 	date: (new Date()),
 	
-	studentWorker: "Bob",
+	studentWorker: "Joe",
 	schedulerID: 652,
 	lab: 'Blocker', //SCC, Pool, WCL
 	
@@ -81,18 +81,20 @@ app.run(function(editableOptions, editableThemes) {
 });
 
 app.controller('Ctrl', function($scope) {
+	var getLabStations; 
 	
 	$scope.incident = {
 		reportedBy: "Tobias",
 		userID: "thinktt",
-		date: (new Date()),
-		time: (new Date().getTime()),
+		date: '2014-09-07',
+		time: '15:00',
 		studentWorker: "Bob",
 		schedulerID: 652,
+		fromLab: 'BLOC',
 		lab: 'BLOC', //SCC, Pool, WCL
 		station: 'Help Desk', 
-		shiftStart: (new Date()),
-		shiftArrive: (new Date()),
+		shiftStart: '15:00',
+		shiftArrive: '16:00',
 		type: 'Absent', //Tardy, Absent
 		openStatus: 'Open', //Open, Closed
 		sentEmail: 'no', //no, yes
@@ -102,7 +104,7 @@ app.controller('Ctrl', function($scope) {
 		comments: comments,
 		emailLogs: [],
 		status: 'Unexcused', //Unexcused, Excused
-		meeting: 'Pending', //if not pending date goes here
+		meetingDate: 'Pending', //if not pending date goes here
 	};
 
 	$scope.leaders = [
@@ -115,6 +117,62 @@ app.controller('Ctrl', function($scope) {
 	    {name: 'Nne'}
   	];
 
+  	$scope.incedentTypes = [
+  		'Absent', 
+  		'Tardy', 
+  		'Approachability', 
+  		'Dress Code'
+  	];
+
+  	$scope.incidentStatusTypes = [
+  		'Pending Review',
+  		'Unexcused',
+  		'Excused'
+  	];
+
+  	$scope.labs = [
+  		{
+  			name: 'SCC', 
+  			stations: ['Print Room', 'Info', 'Resource']
+  		},
+  		{
+  			name: 'BLOC', 
+  			stations: ['Print Room','Help Desk', 'ZACH']
+  		},
+  		{
+  			name: 'WCL', 
+  			stations: ['Print Room', 'Help Desk']
+  		},
+  	];
+
+  	 
+
+  	$scope.registerStationSelecter = function(stationSelecter) {
+  		$scope.stationSelecter = stationSelecter;
+  	};
+
+  	$scope.updateLabStations = function(selectedLab) {
+  		var i; 
+  		for(i =0; i < $scope.labs.length; i++){
+  			if(selectedLab === $scope.labs[i].name ) {
+  				$scope.labStations = $scope.labs[i].stations;
+  			} 
+  		}
+  	};
+
+  	$scope.registerMeetingSelecter = function (meetingSelecter) {
+  		$scope.meetingSelecter = meetingSelecter; 
+  	};
+
+  	$scope.clearMeetingSelecter = function() {
+  		$scope.meetingSelecter.$data = ''; 
+  	};
+
+  	$scope.setMeetingPending = function() {
+  		if($scope.incident.meetingDate === '') {
+  			$scope.incident.meetingDate = 'Pending';
+  		} 
+  	};
 
 });
 

@@ -58,7 +58,8 @@ function creatComment() {
 		date: '2014-09-07',
 		time: '15:00',
 		subject: 'Initial Comment',
-		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.' 
+		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+		new: false
 	};
 
 	return comment;
@@ -67,9 +68,9 @@ function creatComment() {
 var comments = [];
 var i =0;
 
-for(i=0; i<3; i++) {
+/*for(i=0; i<3; i++) {
 	comments[i] = creatComment(); 
-}
+}*/
 
 
 var app = angular.module("app", ["xeditable"]);
@@ -173,6 +174,36 @@ app.controller('Ctrl', function($scope) {
   			$scope.incident.meetingDate = 'Pending';
   		} 
   	};
+
+  	$scope.addComment = function() {
+  		var comment = {
+			by: 'Tobias',
+			date: '2014-09-07',
+			time: '15:00',
+			subject: 'Tester Comment',
+			body: 'He quit like a rock star!',
+			new: true 
+		};
+
+  		$scope.incident.comments.push(comment); 
+  	};
+
+  	$scope.clearNewStatus = function(index){
+  		$scope.incident.comments[index].new = false;
+  	};
+
+  	//this function is called on cancel. If it finds
+  	//that the comment is a new comment it deletes it
+  	$scope.checkForNew = function(index){
+  		if($scope.incident.comments[index].new) {
+  			if(confirm('Do you want to delete this comment?')) {
+	  			$scope.incident.comments.splice(index,1);
+  			} else {
+  				$scope.incident.comments[index].new = false;
+  			}
+  		}
+  	};
+
 
 });
 

@@ -1,5 +1,5 @@
-var a = 2;
-var b = 1;
-var x, y; 
+var myArray = ['Howdy', 'Yo', 'Hello', 'Greetings', 'Goodbye'];
 
-console.log(true && 1);
+myArray.splice(2,1);
+
+console.log(myArray); 

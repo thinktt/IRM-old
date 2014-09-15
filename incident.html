@@ -201,7 +201,11 @@
 					</table>
 					</form>
 
-					<form editable-form name="ec" ng-repeat="comment in incident.comments | orderBy:'date'">   
+					<form editable-form name="ec" 
+						ng-repeat="comment in incident.comments | orderBy:'date'"
+						onaftersave="clearNewStatus($index)" 
+						oncancel="checkForNew($index)">   
+						<div ng-if="comment.new" ng-init="ec.$show()" ></div>
 						<table class="table table-bordered table-condensed">
 							<tr>
 								<td  colspan="3">
@@ -251,6 +255,22 @@
 							</tr>
 						</table>
 				</form>
+
+				<div>
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td>
+							<span 
+								ng-click="addComment()"
+								class="glyphicon glyphicon-plus pull-right"> 
+							</span> 
+							<span class="pull-right">
+								Add Comment &nbsp;
+							</span> 
+							</td>
+						</tr>
+					</table>
+				</div>
 
 			</div> <!-- end of column 3-->
 		</div> <!--end of row1-->

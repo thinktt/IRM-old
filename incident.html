@@ -209,16 +209,19 @@
 						<table class="table table-bordered table-condensed">
 							<tr>
 								<td  colspan="3">
+									Subject:
 									<span editable-text="comment.subject"
+										e-size="60" 
 										e-tabindex=1>
 										{{comment.subject}}
 									</span>
 								</td>
-								<td> 
-									 <div editable-select="comment.by" 
-											e-ng-options="leader.name as leader.name for leader in leaders">
-											by: {{ comment.by }}
-									 </div>
+								<td>
+									by: 
+									<span editable-select="comment.by" 
+										e-ng-options="leader.name as leader.name for leader in leaders">
+										{{ comment.by }}
+									</span>
 								</td>
 								<td>
 									<span editable-date="comment.date">                
@@ -245,6 +248,12 @@
 										ng-click="ec.$cancel()"
 										class="glyphicon glyphicon-remove pull-right" 
 									>cancel &nbsp;</span> 
+									<span 
+										ng-show="ec.$visible"
+										ng-disabled="ec.$waiting"
+										ng-click="deleteComment($index)"
+										class="glyphicon glyphicon-trash pull-right" 
+									>&nbsp;</span> 
 								</td>
 							</tr>
 							<tr>

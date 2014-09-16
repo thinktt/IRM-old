@@ -178,8 +178,9 @@ app.controller('Ctrl', function($scope) {
 	$scope.addComment = function() {
 		var comment = {
 			by: 'Tobias',
-			date: '2014-09-07',
-			time: '15:00',
+			timeStamp: moment(new Date()).unix(),
+			date: moment(new Date()).format('YYYY-MM-DD'),
+			time: moment(new Date()).format('HH:mm'),
 			subject: '',
 			body: '',
 			new: true 
@@ -204,10 +205,19 @@ app.controller('Ctrl', function($scope) {
 		}
 	};
 
+
 	$scope.deleteComment = function(index){
 		if(confirm('Do you want to delete this comment?')) {
 			$scope.incident.comments.splice(index,1);
 		} 
+	};
+
+	$scope.reFormat = function(unixTime) {
+		return moment.unix(unixTime).format('MM-DD-YYYY h:mm a');	
+	};
+
+	$scope.makeTimeStamp = function(date, time) {
+		return moment(date + ' ' + time).unix();	
 	};
 
 

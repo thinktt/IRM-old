@@ -11,6 +11,7 @@
 	<link href="css/xeditable.css" rel="stylesheet">
 	<script src="js/angular.min.js"></script>
 	<script src="js/xeditable.min.js"></script>
+	<script src="js/moment.min.js"></script>
 	<!--script src="js/bootstrap.min.js"> </script-->
 	<script src="incident.js"> </script>
 </head>
@@ -202,8 +203,8 @@
 					</form>
 
 					<form editable-form name="ec" 
-						ng-repeat="comment in incident.comments | orderBy:'date'"
-						onaftersave="clearNewStatus($index)" 
+						ng-repeat="comment in incident.comments | orderBy:'timeStamp'"
+						onaftersave="clearNewStatus($index);" 
 						oncancel="checkForNew($index)">   
 						<div ng-if="comment.new" ng-init="ec.$show()" ></div>
 						<table class="table table-bordered table-condensed">
@@ -224,11 +225,13 @@
 									</span>
 								</td>
 								<td>
-									<span editable-date="comment.date">                
+									<span editable-date="comment.date"
+										onaftersave="comment.timeStamp = makeTimeStamp(comment.date, comment.time)">       
 										{{comment.date | date: 'MM-dd-yyyy'}}
 									</span>
 									<span editable-time="comment.time"  e-minute-step="10">                
-										{{comment.time | toStandardTime}}
+										{{comment.time | toStandardTime}} &nbsp; {{comment.timeStamp}}
+										&nbsp; {{comment.timeStamp * 1000 | date: 'MM-dd-yyyy h:m a'}}
 									</span>
 
 									<span 

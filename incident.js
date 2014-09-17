@@ -6,20 +6,20 @@ var module = angular.module("testApp", ['ngRoute']);
 
 
 module.config(['$routeProvider',
-    function($routeProvider) {
-        $routeProvider.
-            when('/route1', {
-                templateUrl: 'incident-view.html',
-                controller: 'Ctrl'
-            }).
-            when('/route2', {
-                templateUrl: 'view2.html',
-                controller: 'RouteController'
-            }).
-            otherwise({
-                redirectTo: '/'
-            });
-    }]);
+	function($routeProvider) {
+		$routeProvider.
+			when('/route1', {
+				templateUrl: 'incident-view.html',
+				controller: 'Ctrl'
+			}).
+			when('/route2', {
+				templateUrl: 'view2.html',
+				controller: 'RouteController'
+			}).
+			otherwise({
+				redirectTo: '/'
+			});
+	}]);
 
 module.controller("RouteController", function($scope) {
 
@@ -113,20 +113,36 @@ app.run(function(editableOptions, editableThemes) {
 
 
 app.config(['$routeProvider',
-    function($routeProvider) {
-        $routeProvider.
-            when('/route1', {
-                templateUrl: 'incident-view.html',
-                controller: 'Ctrl'
-            }).
-            when('/route2', {
-                templateUrl: 'view2.html',
-                controller: 'RouteController'
-            }).
-            otherwise({
-                redirectTo: '/'
-            });
-    }]);
+	function($routeProvider) {
+		$routeProvider.
+			when('/report', {
+				templateUrl: 'new-report-view.html',
+				controller: 'Ctrl'
+			}).
+			when('/open', {
+				templateUrl: 'incident-view.html',
+				controller: 'Ctrl'
+			}).
+			when('/view', {
+				templateUrl: 'report-view.html',
+				controller: 'Ctrl'
+			}).
+			otherwise({
+				redirectTo: '/report'
+			});
+	}]);
+
+
+
+app.controller('NavCtrl', function($scope,  $location){
+	$scope.isActive = function (viewLocation) { 
+		return viewLocation === $location.path();
+	};
+});
+
+
+
+
 
 
 app.controller('Ctrl', function($scope) {

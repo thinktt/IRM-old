@@ -11,6 +11,7 @@
 	<link href="css/xeditable.css" rel="stylesheet">
 	<script src="js/angular.js"></script>
 	<script src="js/angular-route.js"></script>
+	<script src="js/ui-bootstrap.js"></script>
 	<script src="js/xeditable.min.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script src="incident.js"> </script>
@@ -18,7 +19,7 @@
 
 
 <body>
-<nav class="navbar navbar-default " role="navigation">
+<nav class="navbar navbar-default " role="navigation" ng-controller="NavCtrl">
  
 	<!--div class="nav-content"--> <!--nav content-->
 	
@@ -30,15 +31,21 @@
 				</div> <!--nav bar header end-->
  
 			<ul class="nav navbar-nav ">
-				<li><a href="#/route1">
-					<span class="glyphicon glyphicon-edit"></span> 
-					&nbsp Report Incident</a></li>
-				<li class="active"><a href="#/route2">
-					<span class="glyphicon glyphicon-asterisk"></span>
-					&nbsp Current Open Incidents</a></li>
-				<li><a href="#">
+				<li ng-class="{ active: isActive('/report')}">
+					<a href="#/report">
+						<span class="glyphicon glyphicon-edit"></span> 
+						&nbsp Report Incident
+				</a></li>
+				<li ng-class="{ active: isActive('/open')}">
+					<a href="#/open">
+						<span class="glyphicon glyphicon-asterisk"></span>
+						&nbsp Current Open Incidents
+				</a></li>
+				<li ng-class="{ active: isActive('/view')}"S>
+					<a href="#/view">
 					<span class="glyphicon glyphicon-folder-open"></span> 
-					&nbsp View Reports</a></li>
+					&nbsp View Reports
+					</a></li>
 			</ul>
 		</div> <!--column 1-->
 	</div> <!--navbar row end-->

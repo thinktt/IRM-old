@@ -1,0 +1,78 @@
+
+<div class="container container-pad">
+<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
+
+  <div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
+     <h4><span class="glyphicon glyphicon-edit"></span>&nbsp Report Incident</h4>
+  </div> <!--panel heading end-->
+  <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
+
+  <div> <!--row1-->
+  <div class="col-lg-3"> <!--column 1-->
+   <form class="form">
+    Person reporting <br>
+    <select name="reportedBy" class="form-control">
+     <option value="Blocker">Tobias Toland</option>
+     <option value="SCC">Cynthia Williams</option>
+     <option value="WCL">Christian Tambe</option>
+     <option value="Pool">Natascha Shamberg</option>
+   </select> <br> 
+
+   Student worker <br>
+   <input type="text" name="studentWorker" class="form-control"><br>
+
+   Scheduler ID <br>
+   <input type="text" name="schedulerID" class="form-control"><br> 
+
+   From Lab <br>
+   <select name="lab" class="select-block form-control">
+     <option value="Blocker">Blocker</option>
+     <option value="SCC">SCC</option>
+     <option value="WCL">WCL</option>
+     <option value="Pool">Pool</option>
+   </select> <br> 
+
+   Date of incident <br>
+   <input name="date" type="date" class="form-control" id="myDate"><br> 
+ </div> <!--end of column 1-->
+ 
+ <div  class="col-lg-3">  <!--column 2-->
+    Shift start time <br>
+    <input name="shiftStartTime" type="time" class="form-control"> <br> 
+  
+    Student worker has<br>
+    <input type="radio" name="status" value="open"> 
+    not arrived yet <br>
+    <input type="radio" name="status" value="closed"> 
+    missed entire shift or is not comming <br>
+    <input type="radio" name="status" value="closed"> 
+    arived late <br><br>
+    
+    Arrival time: <br>
+    <input name="arrivalTime" type="time" class="form-control" id="myTime"> <br> 
+  
+    Incident type <br>
+    <select name="type" class="form-control">
+    <option value="Tardy">Tardy (5 min or more)</option>
+    <option value="Absent">Absent (15 min or more)</option>
+    </select> <br> 
+  
+    Called: 
+    <input type="radio" name="called" value="no" checked>no 
+    <input type="radio" name="called" value="yes">yes <br>
+ </div> <!-- end of column 2 -->
+
+<div  class="col-lg-6">  <!--Coumn 3-->
+  Reason given for incident <br>
+  <input type="text" name="reason" placeholder="none" size="45" class="form-control"><br>
+  Comments about incident <br> 
+  <textarea rows="10" cols="47" name="comment[]" class="form-control"> </textarea> <br>
+
+  <button class="btn btn-large btn-custom-lighten" type="submit">Submit</button>
+ </form>
+</div> <!-- end of column 3-->
+</div> <!--end of row1-->
+
+</div> <!--panel body end-->
+</div> <!--internal container end-->
+</div> <!-- /main container end -->

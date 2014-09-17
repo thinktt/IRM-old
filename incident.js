@@ -1,4 +1,34 @@
 
+
+
+//.....................For Testing................................
+var module = angular.module("testApp", ['ngRoute']);
+
+
+module.config(['$routeProvider',
+    function($routeProvider) {
+        $routeProvider.
+            when('/route1', {
+                templateUrl: 'incident-view.html',
+                controller: 'Ctrl'
+            }).
+            when('/route2', {
+                templateUrl: 'view2.html',
+                controller: 'RouteController'
+            }).
+            otherwise({
+                redirectTo: '/'
+            });
+    }]);
+
+module.controller("RouteController", function($scope) {
+
+});
+
+//..........................................................
+
+
+
 function createIncident() {
 	
 	var incident = 
@@ -73,13 +103,31 @@ var i =0;
 }*/
 
 
-var app = angular.module("app", ["xeditable"]);
+var app = angular.module("app", ["xeditable", "ngRoute"]);
 
 app.run(function(editableOptions, editableThemes) {
   editableThemes.bs3.inputClass = 'input-sm';
   editableThemes.bs3.buttonsClass = 'btn-sm';
   editableOptions.theme = 'bs3';
 });
+
+
+app.config(['$routeProvider',
+    function($routeProvider) {
+        $routeProvider.
+            when('/route1', {
+                templateUrl: 'incident-view.html',
+                controller: 'Ctrl'
+            }).
+            when('/route2', {
+                templateUrl: 'view2.html',
+                controller: 'RouteController'
+            }).
+            otherwise({
+                redirectTo: '/'
+            });
+    }]);
+
 
 app.controller('Ctrl', function($scope) {
 	var getLabStations; 

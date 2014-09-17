@@ -1,20 +1,21 @@
+    var module = angular.module("sampleApp", ['ngRoute']);
 
-var moment = require('./js/moment'),
-	theTime = '15:02',
-	theDate = '2014-09-07',
-	dateTime = theDate + ' ' + theTime,
-	unixTime;
+    module.config(['$routeProvider',
+        function($routeProvider) {
+            $routeProvider.
+                when('/route1', {
+                    templateUrl: 'view.html',
+                    controller: 'RouteController'
+                }).
+                when('/route2', {
+                    templateUrl: 'view2.html',
+                    controller: 'RouteController'
+                }).
+                otherwise({
+                    redirectTo: '/'
+                });
+        }]);
 
+    module.controller("RouteController", function($scope) {
 
-
-unixTime = moment(new Date()).unix();
-
-//console.log(unixTime); 
-//console.log(moment.unix(unixTime).format('dddd, MMMM Do YYYY, h:mma'));
-
-unixTime = new Date(dateTime).getTime();
-
-console.log(unixTime);
-console.log(new Date());
-
-
+    });

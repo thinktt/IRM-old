@@ -15,6 +15,6 @@ unixTime = moment(new Date()).unix();
 unixTime = new Date(dateTime).getTime();
 
 console.log(unixTime);
-console.log(new Date())
+console.log(new Date());
 
 

@@ -22,6 +22,10 @@ app.config(['$routeProvider',
 				controller: 'CurrentCtrl'
 			}).
 			when('/view', {
+				templateUrl: 'report-view.html',
+				controller: 'Ctrl'
+			}).
+			when('/incident', {
 				templateUrl: 'incident-view.html',
 				controller: 'Ctrl'
 			}).
@@ -46,10 +50,20 @@ app.controller('NavCtrl', function($scope,  $location){
 
 
 app.controller('CurrentCtrl', function($scope, $location){
+	var index; 
 	$scope.incidents = incidents; 
-	$scope.setFocus = function(incidentToFocus) {
-		incidentOfFocus = incidentToFocus;
+	
+	$scope.setFocus = function($index) {
+		incidentOfFocus = incidents[$index];
+		index = $index;
 	};
+
+	$scope.deleteIncident = function(){
+		if(confirm('Do you want to delete this incident?')) {
+			$scope.incident.splice(index,1);
+		} 
+	};
+
 
 
 

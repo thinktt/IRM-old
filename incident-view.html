@@ -73,6 +73,13 @@
 										ng-click="ei.$show()" 
 										ng-hide="ei.$visible"
 									></span> 
+									<a href="#/open">
+										<span
+											class="glyphicon glyphicon-share pull-right"
+											ng-click="ei.$show()" 
+											ng-hide="ei.$visible"
+										>&nbsp; </span>
+									</a>									
 									<span
 										ng-show="ei.$visible"
 										ng-disabled="ei.$waiting" 
@@ -85,6 +92,12 @@
 										ng-click="ei.$cancel()"
 										class="glyphicon glyphicon-remove pull-right" 
 									>cancel &nbsp;</span> 
+									<span 
+										ng-show="ei.$visible"
+										ng-disabled="ei.$waiting"
+										ng-click="deleteIncident()"
+										class="glyphicon glyphicon-trash pull-right" 
+									>&nbsp;</span> 
 								</td>
 							
 							</tr>

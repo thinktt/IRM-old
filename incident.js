@@ -1,107 +1,5 @@
 
-
-
-//.....................For Testing................................
-var module = angular.module("testApp", ['ngRoute']);
-
-
-module.config(['$routeProvider',
-	function($routeProvider) {
-		$routeProvider.
-			when('/route1', {
-				templateUrl: 'incident-view.html',
-				controller: 'Ctrl'
-			}).
-			when('/route2', {
-				templateUrl: 'view2.html',
-				controller: 'RouteController'
-			}).
-			otherwise({
-				redirectTo: '/'
-			});
-	}]);
-
-module.controller("RouteController", function($scope) {
-
-});
-
-//..........................................................
-
-
-
-function createIncident() {
-	
-	var incident = 
-	{
-		reportedBy: "Tobias",
-		userID: "thinktt",
-		date: (new Date()),
-		
-		studentWorker: "",
-		schedulerID: null,
-		lab: 'Blocker', //SCC, Pool, WCL
-		
-		shiftStart: (new Date()),
-		shiftArrive: (new Date()),
-		type: '', //Tardy, Absent
-		status: 'Open', //Open, Closed
-		sentEmail: 'no', //no, yes
-		called: 'no', //no, yes
-		reason: '',
-		summary: '',
-		comments: [],
-		emailLogs: [],
-		excusedStatus: 'Unexcused', //Unexcused, Excused
-	};
-
-	return incident;
-}
-
-
-var incident = {
-	reportedBy: "Tobias",
-	userID: "thinktt",
-	date: (new Date()),
-	
-	studentWorker: "Joe",
-	schedulerID: 652,
-	lab: 'Blocker', //SCC, Pool, WCL
-	
-	shiftStart: (new Date()),
-	shiftArrive: (new Date()),
-	type: 'Absent', //Tardy, Absent
-	status: 'Open', //Open, Closed
-	sentEmail: 'no', //no, yes
-	called: 'no', //no, yes
-	reason: 'Missed the bus',
-	summary: '',
-	comments: [],
-	emailLogs: [],
-	excusedStatus: 'Unexcused', //Unexcused, Excused
-};
-
-
-function creatComment() {
-	
-	var comment = {
-		by: 'Tobias',
-		date: '2014-09-07',
-		time: '15:00',
-		subject: 'Initial Comment',
-		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
-		new: false
-	};
-
-	return comment;
-}
-
-var comments = [];
-var i =0;
-
-/*for(i=0; i<3; i++) {
-	comments[i] = creatComment(); 
-}*/
-
+//..............Configure the App.............................
 
 var app = angular.module("app", ["xeditable", "ngRoute"]);
 
@@ -120,11 +18,11 @@ app.config(['$routeProvider',
 				controller: 'Ctrl'
 			}).
 			when('/open', {
-				templateUrl: 'incident-view.html',
-				controller: 'Ctrl'
+				templateUrl: 'current-view.html',
+				controller: 'CurrentCtrl'
 			}).
 			when('/view', {
-				templateUrl: 'report-view.html',
+				templateUrl: 'incident-view.html',
 				controller: 'Ctrl'
 			}).
 			otherwise({
@@ -134,6 +32,12 @@ app.config(['$routeProvider',
 
 
 
+
+
+
+
+//......................App Controllers.............................
+
 app.controller('NavCtrl', function($scope,  $location){
 	$scope.isActive = function (viewLocation) { 
 		return viewLocation === $location.path();
@@ -141,9 +45,9 @@ app.controller('NavCtrl', function($scope,  $location){
 });
 
 
-
-
-
+app.controller('CurrentCtrl', function($scope, $location){
+	$scope.incidents = incidents; 
+});
 
 app.controller('Ctrl', function($scope) {
 	var getLabStations; 
@@ -310,3 +214,71 @@ app.filter('toStandardTime', function() {
 
  return toStandardTime; 
 });
+
+
+
+//............Functions for Development......................
+function createIncident() {
+	
+	var incident = {
+		reportedBy: "Tobias",
+		userID: "thinktt",
+		date: '2014-09-07',
+		time: '15:00',
+		studentWorker: "Bob",
+		schedulerID: 652,
+		fromLab: 'BLOC',
+		lab: 'BLOC', //SCC, Pool, WCL
+		station: 'Help Desk', 
+		shiftStart: '15:00',
+		shiftArrive: '16:00',
+		type: 'Absent', //Tardy, Absent
+		openStatus: 'Open', //Open, Closed
+		sentEmail: 'no', //no, yes
+		called: 'no', //no, yes
+		reason: 'Missed the bus',
+		summary: '',
+		comments: comments,
+		emailLogs: [],
+		status: 'Unexcused', //Unexcused, Excused
+		meetingDate: 'Pending', //if not pending date goes here
+	};
+
+	return incident;
+}
+
+
+var incidents = [],  
+	comments = [],
+	i;
+
+
+
+for(i=0; i<3; i++) {
+	incidents[i] = createIncident(); 
+}
+
+
+
+
+
+
+
+
+
+/*
+function creatComment() {
+	
+	var comment = {
+		by: 'Tobias',
+		date: '2014-09-07',
+		time: '15:00',
+		subject: 'Initial Comment',
+		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+		new: false
+	};
+
+	return comment;
+}
+
+*/

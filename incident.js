@@ -47,34 +47,18 @@ app.controller('NavCtrl', function($scope,  $location){
 
 app.controller('CurrentCtrl', function($scope, $location){
 	$scope.incidents = incidents; 
+	$scope.setFocus = function(incidentToFocus) {
+		incidentOfFocus = incidentToFocus;
+	};
+
+
+
 });
 
 app.controller('Ctrl', function($scope) {
 	var getLabStations; 
 	
-	$scope.incident = {
-		reportedBy: "Tobias",
-		userID: "thinktt",
-		date: '2014-09-07',
-		time: '15:00',
-		studentWorker: "Bob",
-		schedulerID: 652,
-		fromLab: 'BLOC',
-		lab: 'BLOC', //SCC, Pool, WCL
-		station: 'Help Desk', 
-		shiftStart: '15:00',
-		shiftArrive: '16:00',
-		type: 'Absent', //Tardy, Absent
-		openStatus: 'Open', //Open, Closed
-		sentEmail: 'no', //no, yes
-		called: 'no', //no, yes
-		reason: 'Missed the bus',
-		summary: '',
-		comments: comments,
-		emailLogs: [],
-		status: 'Unexcused', //Unexcused, Excused
-		meetingDate: 'Pending', //if not pending date goes here
-	};
+	$scope.incident = incidentOfFocus;
 
 	$scope.leaders = [
 		 {name: 'Tobias'},
@@ -216,6 +200,34 @@ app.filter('toStandardTime', function() {
 });
 
 
+//..............Global Access.................
+//these should be inplemented differently eventually, probably registered as services
+var incidentOfFocus = {
+		reportedBy: "Tobias",
+		userID: "thinktt",
+		date: '2014-09-07',
+		time: '15:00',
+		studentWorker: "Joey",
+		schedulerID: 652,
+		fromLab: 'BLOC',
+		lab: 'BLOC', //SCC, Pool, WCL
+		station: 'Help Desk', 
+		shiftStart: '15:00',
+		shiftArrive: '16:00',
+		type: 'Absent', //Tardy, Absent
+		openStatus: 'Open', //Open, Closed
+		sentEmail: 'no', //no, yes
+		called: 'no', //no, yes
+		reason: 'Missed the bus',
+		summary: '',
+		comments: comments,
+		emailLogs: [],
+		status: 'Unexcused', //Unexcused, Excused
+		meetingDate: 'Pending', //if not pending date goes here
+	}; 
+
+
+
 
 //............Functions for Development......................
 function createIncident() {
@@ -238,7 +250,7 @@ function createIncident() {
 		called: 'no', //no, yes
 		reason: 'Missed the bus',
 		summary: '',
-		comments: comments,
+		comments: [],
 		emailLogs: [],
 		status: 'Unexcused', //Unexcused, Excused
 		meetingDate: 'Pending', //if not pending date goes here

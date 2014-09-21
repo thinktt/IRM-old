@@ -50,29 +50,20 @@ app.controller('NavCtrl', function($scope,  $location){
 
 
 app.controller('CurrentCtrl', function($scope, $location){
-	var index; 
-	$scope.incidents = incidents; 
 	
-	$scope.setFocus = function($index) {
-		incidentOfFocus = incidents[$index];
-		index = $index;
+	$scope.incidents = incidents; 
+
+	$scope.setFocus = function(index) {
+		incidentOfFocus = incidents[index];
+		indexOfFocus = index;
 	};
-
-	$scope.deleteIncident = function(){
-		if(confirm('Do you want to delete this incident?')) {
-			$scope.incident.splice(index,1);
-		} 
-	};
-
-
-
 
 });
 
-app.controller('Ctrl', function($scope) {
-	var getLabStations; 
+app.controller('Ctrl', function($scope, $location) {
 	
-	$scope.incident = incidentOfFocus;
+	$scope.incident = incidentOfFocus; 
+
 
 	$scope.leaders = [
 		 {name: 'Tobias'},
@@ -186,6 +177,14 @@ app.controller('Ctrl', function($scope) {
 		return moment(date + ' ' + time).unix();	
 	};
 
+	$scope.deleteIncident = function(index){
+		if(confirm('Do you want to delete this incident?')) {
+			incidents.splice(index,1);
+			incidentOfFocus = {isDeleted: true};
+			$location.path( "/open" );
+		} 
+	};
+
 
 });
 
@@ -276,7 +275,7 @@ function createIncident() {
 
 var incidents = [],  
 	comments = [],
-	i;
+	indexOfFocus, i;
 
 
 

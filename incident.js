@@ -38,8 +38,6 @@ app.config(['$routeProvider',
 
 
 
-
-
 //......................App Controllers.............................
 
 app.controller('NavCtrl', function($scope,  $location){
@@ -49,20 +47,20 @@ app.controller('NavCtrl', function($scope,  $location){
 });
 
 
-app.controller('CurrentCtrl', function($scope, $location){
-	
-	$scope.incidents = incidents; 
+app.controller('CurrentCtrl', function($scope, $location, incidentManager){
+
+	$scope.incidents = incidentManager.incidents; 
 
 	$scope.setFocus = function(index) {
-		incidentOfFocus = incidents[index];
-		indexOfFocus = index;
+		incidentManager.incidentOfFocus = $scope.incidents[index];
+		incidentManager.indexOfFocus = index;
 	};
 
 });
 
-app.controller('Ctrl', function($scope, $location) {
+app.controller('Ctrl', function($scope, $location, incidentManager) {
 	
-	$scope.incident = incidentOfFocus; 
+	$scope.incident = incidentManager.incidentOfFocus; 
 
 
 	$scope.leaders = [
@@ -179,8 +177,8 @@ app.controller('Ctrl', function($scope, $location) {
 
 	$scope.deleteIncident = function(index){
 		if(confirm('Do you want to delete this incident?')) {
-			incidents.splice(index,1);
-			incidentOfFocus = {isDeleted: true};
+			incidentManager.incidents.splice(index,1);
+			incidentManager.incidentOfFocus = {isDeleted: true};
 			$location.path( "/open" );
 		} 
 	};
@@ -213,97 +211,67 @@ app.filter('toStandardTime', function() {
 });
 
 
-//..............Global Access.................
-//these should be inplemented differently eventually, probably registered as services
-var incidentOfFocus = {
-		reportedBy: "Tobias",
-		userID: "thinktt",
-		date: '2014-09-07',
-		time: '15:00',
-		studentWorker: "Joey",
-		schedulerID: 652,
-		fromLab: 'BLOC',
-		lab: 'BLOC', //SCC, Pool, WCL
-		station: 'Help Desk', 
-		shiftStart: '15:00',
-		shiftArrive: '16:00',
-		type: 'Absent', //Tardy, Absent
-		openStatus: 'Open', //Open, Closed
-		sentEmail: 'no', //no, yes
-		called: 'no', //no, yes
-		reason: 'Missed the bus',
-		summary: '',
-		comments: comments,
-		emailLogs: [],
-		status: 'Unexcused', //Unexcused, Excused
-		meetingDate: 'Pending', //if not pending date goes here
-	}; 
+//..............Services.................
+app.service('incidentManager', function() {
+
+	var incidents= [], 
+		 incidentOfFocus, indexOfFocus, i,
+		 createIncident, getIncidents, getFocus;
 
 
+	createIncident = function() {
+		var incident = {
+			reportedBy: "Tobias",
+			userID: "thinktt",
+			date: '2014-09-07',
+			time: '15:00',
+			studentWorker: "Bob",
+			schedulerID: 652,
+			fromLab: 'BLOC',
+			lab: 'BLOC', //SCC, Pool, WCL
+			station: 'Help Desk', 
+			shiftStart: '15:00',
+			shiftArrive: '16:00',
+			type: 'Absent', //Tardy, Absent
+			openStatus: 'Open', //Open, Closed
+			sentEmail: 'no', //no, yes
+			called: 'no', //no, yes
+			reason: 'Missed the bus',
+			summary: '',
+			comments: [],
+			emailLogs: [],
+			status: 'Unexcused', //Unexcused, Excused
+			meetingDate: 'Pending', //if not pending date goes here
+		};
 
-
-//............Functions for Development......................
-function createIncident() {
-	
-	var incident = {
-		reportedBy: "Tobias",
-		userID: "thinktt",
-		date: '2014-09-07',
-		time: '15:00',
-		studentWorker: "Bob",
-		schedulerID: 652,
-		fromLab: 'BLOC',
-		lab: 'BLOC', //SCC, Pool, WCL
-		station: 'Help Desk', 
-		shiftStart: '15:00',
-		shiftArrive: '16:00',
-		type: 'Absent', //Tardy, Absent
-		openStatus: 'Open', //Open, Closed
-		sentEmail: 'no', //no, yes
-		called: 'no', //no, yes
-		reason: 'Missed the bus',
-		summary: '',
-		comments: [],
-		emailLogs: [],
-		status: 'Unexcused', //Unexcused, Excused
-		meetingDate: 'Pending', //if not pending date goes here
+		return incident;
 	};
 
-	return incident;
-}
 
+	//load in a few dummy incidents 
+	for(i=0; i<3; i++) {
+		incidents[i] = createIncident(); 
+	}
 
-var incidents = [],  
-	comments = [],
-	indexOfFocus, i;
-
-
-
-for(i=0; i<3; i++) {
-	incidents[i] = createIncident(); 
-}
+	this.incidents = incidents; 
+	this.indexOfFocus = 0; 
+	this.incidentOfFocus = incidents[0];
 
 
 
-
-
-
-
-
-
-/*
-function creatComment() {
-	
-	var comment = {
-		by: 'Tobias',
-		date: '2014-09-07',
-		time: '15:00',
-		subject: 'Initial Comment',
-		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
-		new: false
+	getIncidents = function() {
+		return incidents;
 	};
 
-	return comment;
-}
+	getFocus = function() {
+		return {
+			incident: incidentOfFocus,
+			index: indexOfFocus
+		};
+	};
 
-*/
+
+});
+
+
+

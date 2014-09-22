@@ -15,7 +15,7 @@ app.config(['$routeProvider',
 		$routeProvider.
 			when('/report', {
 				templateUrl: 'new-report-view.html',
-				controller: 'Ctrl'
+				controller: 'NewReportCtrl'
 			}).
 			when('/open', {
 				templateUrl: 'current-view.html',
@@ -44,6 +44,72 @@ app.controller('NavCtrl', function($scope,  $location){
 	$scope.isActive = function (viewLocation) { 
 		return viewLocation === $location.path();
 	};
+});
+
+
+app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
+	var incidentTypes, incidentStatusTypes, labs;
+
+	$scope.incident = incidentManager.newIncident;
+	$scope.leaders = incidentManager.leaders; 
+
+	$scope.incedentTypes = [
+		{value: 'Tardy', label: 'Tardy (5 min or more'}, 
+		{value: 'Absent', label:'Absent (15 min or more)'}, 
+		{value: 'Approachability', label: 'Approachability'}, 
+		{value: 'Dress Code', label: 'Dress Code'}
+	];
+
+	$scope.incidentStatusTypes = [
+		'Pending Review',
+		'Unexcused',
+		'Excused'
+	];
+
+	$scope.labs = [
+		{
+			name: 'SCC', 
+			stations: ['Print Room', 'Info', 'Resource']
+		},
+		{
+			name: 'BLOC', 
+			stations: ['Print Room','Help Desk', 'ZACH']
+		},
+		{
+			name: 'WCL', 
+			stations: ['Print Room', 'Help Desk']
+		},
+	];
+
+	$scope.updateLabStations = function(selectedLab) {
+		var i; 
+		for(i =0; i < $scope.labs.length; i++){
+			if(selectedLab === $scope.labs[i].name ) {
+				$scope.labStations = $scope.labs[i].stations;
+				$scope.incident.station = $scope.labStations[0];
+			} 
+		}
+	};
+
+
+	$scope.submit = function(incidentToOpen) {
+		$scope.incident.comments[0].date = 
+			(moment(new Date()).format('YYYY-MM-DD'));
+		
+		$scope.incident.comments[0].time = 
+			(moment(new Date()).format('HH:mm'));
+
+		$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
+
+		$scope.incident.comments[0].by = $scope.incident.reportedBy; 
+		
+		incidentManager.openIncident(incidentToOpen);
+		incidentManager.makeNewIncident();
+		$scope.incident = incidentManager.newIncident; 
+	};
+
+	$scope.updateLabStations($scope.incident.lab); 	
+
 });
 
 
@@ -232,6 +298,7 @@ app.service('incidentManager', function() {
 			station: 'Help Desk', 
 			shiftStart: '15:00',
 			shiftArrive: '16:00',
+			arrivalStatus: 'pending',
 			type: 'Absent', //Tardy, Absent
 			openStatus: 'Open', //Open, Closed
 			sentEmail: 'no', //no, yes
@@ -248,15 +315,73 @@ app.service('incidentManager', function() {
 	};
 
 
-	//load in a few dummy incidents 
+	/*//load in a few dummy incidents 
 	for(i=0; i<3; i++) {
 		incidents[i] = createIncident(); 
-	}
+	}*/
+
+	this.leaders = [
+		 {name: 'Tobias'},
+		 {name: 'Cynthia'} ,
+		 {name: 'Lauren'} ,
+		 {name: 'Ryan'} ,
+		 {name: 'Jeremiah'},
+		 {name: 'John'},
+		 {name: 'Nne'}
+	];
 
 	this.incidents = incidents; 
 	this.indexOfFocus = 0; 
 	this.incidentOfFocus = incidents[0];
 
+
+	this.makeNewIncident = function() {
+		var incident, comment;
+
+		comment = {
+			by: 'Tobias',
+			date: '15:00',
+			time: '15:00',
+			subject: 'Initial Comment',
+			body: '',
+			new: false
+		};
+
+	 	incident = {
+			reportedBy: "Tobias",
+			userID: "thinktt",
+			date: (moment(new Date()).format('YYYY-MM-DD')),
+			time: (moment(new Date()).format('HH:mm')),
+			studentWorker: "",
+			schedulerID: '',
+			fromLab: 'BLOC',
+			lab: 'BLOC', //SCC, Pool, WCL
+			station: 'Help Desk', 
+			shiftStart: (moment(new Date()).format('HH:00')),
+			shiftArrive: (moment(new Date()).format('HH:30')),
+			arrivalStatus: 'pending',
+			type: 'Absent', //Tardy, Absent
+			openStatus: 'Open', //Open, Closed
+			sentEmail: 'no', //no, yes
+			called: 'no', //no, yes
+			reason: '',
+			summary: '',
+			comments: [],
+			emailLogs: [],
+			status: 'Unexcused', //Unexcused, Excused
+			meetingDate: 'Pending', //if not pending date goes here
+		};
+
+		incident.comments.push(comment); 
+		this.newIncident  = incident;
+	};
+
+	//initialize the new incident object
+	this.makeNewIncident();
+
+	this.openIncident = function(incident) {
+		this.incidents.push(incident);
+	};
 
 
 	getIncidents = function() {
@@ -275,3 +400,19 @@ app.service('incidentManager', function() {
 
 
 
+/*
+function creatComment() {
+	
+	var comment = {
+		by: 'Tobias',
+		date: '2014-09-07',
+		time: '15:00',
+		subject: 'Initial Comment',
+		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+		new: false
+	};
+
+	return comment;
+}
+ 
+*/

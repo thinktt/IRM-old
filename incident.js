@@ -81,6 +81,7 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 		},
 	];
 
+	//when the incdient lab changes this keeps the station list updated
 	$scope.updateLabStations = function(selectedLab) {
 		var i; 
 		for(i =0; i < $scope.labs.length; i++){
@@ -93,14 +94,15 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 
 
 	$scope.submit = function(incidentToOpen) {
+
+		//$scope.incident.shiftArrive = 'pending';
+
+		//initialize all time data for first comment and who it is by
 		$scope.incident.comments[0].date = 
 			(moment(new Date()).format('YYYY-MM-DD'));
-		
 		$scope.incident.comments[0].time = 
 			(moment(new Date()).format('HH:mm'));
-
 		$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
-
 		$scope.incident.comments[0].by = $scope.incident.reportedBy; 
 		
 		incidentManager.openIncident(incidentToOpen);
@@ -108,6 +110,7 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 		$scope.incident = incidentManager.newIncident; 
 	};
 
+	//when controller starts match the lab stations to the intial lab 
 	$scope.updateLabStations($scope.incident.lab); 	
 
 });
@@ -123,6 +126,8 @@ app.controller('CurrentCtrl', function($scope, $location, incidentManager){
 	};
 
 });
+
+
 
 app.controller('Ctrl', function($scope, $location, incidentManager) {
 	
@@ -254,26 +259,26 @@ app.controller('Ctrl', function($scope, $location, incidentManager) {
 
 
 app.filter('toStandardTime', function() {
-  var toStandardTime;
+	var toStandardTime;
   
-  toStandardTime = function(milTime) {
-	var out, milTmRegex, hours24, hours, amPm, minutes; 
-	milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
-	
-	if (milTmRegex.test(milTime)) {
-		hours24 = parseInt(milTime.slice(0,2));
-		hours = ((hours24 + 11) % 12) + 1;
-		amPm = hours24 > 11 ? ' PM' : ' AM';
-		minutes = milTime.slice(3,5);
-		
-		return hours + ':' + minutes + amPm;
+	toStandardTime = function(milTime) {
+		var out, milTmRegex, hours24, hours, amPm, minutes; 
+		milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
 
-	  } else {
-		return miltime; 
-	}
- };
+		if (milTmRegex.test(milTime)) {
+			hours24 = parseInt(milTime.slice(0,2));
+			hours = ((hours24 + 11) % 12) + 1;
+			amPm = hours24 > 11 ? ' PM' : ' AM';
+			minutes = milTime.slice(3,5);
+			
+			return hours + ':' + minutes + amPm;
 
- return toStandardTime; 
+		  } else {
+			return miltime; 
+		}
+	};
+
+	return toStandardTime; 
 });
 
 
@@ -355,6 +360,7 @@ app.service('incidentManager', function() {
 			studentWorker: "",
 			schedulerID: '',
 			fromLab: 'BLOC',
+			fullID: '', //fromLab-schedulerID
 			lab: 'BLOC', //SCC, Pool, WCL
 			station: 'Help Desk', 
 			shiftStart: (moment(new Date()).format('HH:00')),

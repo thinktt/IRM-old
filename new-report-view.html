@@ -20,11 +20,8 @@
 	Student worker's lab <br>
 	<select name="fromLab"
 		ng-model="incident.fromLab" 
-		class="select-block form-control">
-		<option ng-repeat="lab in labs" value={{lab.name}}>
-				{{lab.name}}
-		</option>
-		<option value="Pool">Pool</option>
+		class="select-block form-control"
+    ng-options='lab.name as lab.name for lab in fromLabs'>
 	</select> <br> 
 
 	Student worker's scheduler ID <br>

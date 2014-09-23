@@ -66,6 +66,13 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 		'Excused'
 	];
 
+	$scope.fromLabs = [
+		{name: 'SCC'},
+		{name: 'BLOC'},
+		{name: 'WCL'},
+		{name: 'POOL'}
+	];
+
 	$scope.labs = [
 		{
 			name: 'SCC', 
@@ -298,43 +305,7 @@ app.service('incidentManager', function() {
 	var incidents= [], 
 		 incidentOfFocus, indexOfFocus, i,
 		 createIncident, getIncidents, getFocus;
-
-
-	createIncident = function() {
-		var incident = {
-			reportedBy: "Tobias",
-			userID: "thinktt",
-			date: '2014-09-07',
-			time: '15:00',
-			studentWorker: "Bob",
-			schedulerID: 652,
-			fromLab: 'BLOC',
-			lab: 'BLOC', //SCC, Pool, WCL
-			station: 'Help Desk', 
-			shiftStart: '15:00',
-			shiftArrive: '16:00',
-			arrivalStatus: 'pending',
-			type: 'Absent', //Tardy, Absent
-			openStatus: 'Open', //Open, Closed
-			sentEmail: 'no', //no, yes
-			called: 'no', //no, yes
-			reason: 'Missed the bus',
-			summary: '',
-			comments: [],
-			emailLogs: [],
-			status: 'Unexcused', //Unexcused, Excused
-			meetingDate: 'Pending', //if not pending date goes here
-		};
-
-		return incident;
-	};
-
-
-	/*//load in a few dummy incidents 
-	for(i=0; i<3; i++) {
-		incidents[i] = createIncident(); 
-	}*/
-
+	
 	this.leaders = [
 		 {name: 'Tobias'},
 		 {name: 'Cynthia'} ,
@@ -347,7 +318,7 @@ app.service('incidentManager', function() {
 
 	this.incidents = incidents; 
 	this.indexOfFocus = 0; 
-	this.incidentOfFocus = incidents[0];
+	this.incidentOfFocus = {isDeleted: true};
 
 
 	this.makeNewIncident = function() {
@@ -427,6 +398,43 @@ app.service('incidentManager', function() {
 
 
 /*
+
+createIncident = function() {
+		var incident = {
+			reportedBy: "Tobias",
+			userID: "thinktt",
+			date: '2014-09-07',
+			time: '15:00',
+			studentWorker: "Bob",
+			schedulerID: 652,
+			fromLab: 'BLOC',
+			lab: 'BLOC', //SCC, Pool, WCL
+			station: 'Help Desk', 
+			shiftStart: '15:00',
+			shiftArrive: '16:00',
+			arrivalStatus: 'pending',
+			type: 'Absent', //Tardy, Absent
+			openStatus: 'Open', //Open, Closed
+			sentEmail: 'no', //no, yes
+			called: 'no', //no, yes
+			reason: 'Missed the bus',
+			summary: '',
+			comments: [],
+			emailLogs: [],
+			status: 'Unexcused', //Unexcused, Excused
+			meetingDate: 'Pending', //if not pending date goes here
+		};
+
+		return incident;
+	};
+
+
+	//load in a few dummy incidents 
+	for(i=0; i<3; i++) {
+		incidents[i] = createIncident(); 
+	}
+
+
 function creatComment() {
 	
 	var comment = {

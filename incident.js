@@ -78,7 +78,7 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 		{
 			name: 'WCL', 
 			stations: ['Print Room', 'Help Desk']
-		},
+		}
 	];
 
 	//when the incdient lab changes this keeps the station list updated
@@ -89,6 +89,16 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 				$scope.labStations = $scope.labs[i].stations;
 				$scope.incident.station = $scope.labStations[0];
 			} 
+		}
+	};
+
+	$scope.findName = function(ID) {
+		var name = incidentManager.searchNameByID(ID);
+		//if the search came back with something
+		if(name) {
+			$scope.incident.studentWorker = name; 
+		} else {
+			$scope.incident.studentWorker = '';
 		}
 	};
 
@@ -389,6 +399,16 @@ app.service('incidentManager', function() {
 		this.incidents.push(incident);
 	};
 
+	this.searchNameByID = function (ID) {
+		var IDRegex = /^[0-9]{3}$/, i;
+		if (IDRegex.test(ID)) {
+			for(i=0; i<incidents.length; i++) {
+				if(incidents[i].schedulerID === ID) {
+					return incidents[i].studentWorker;
+				}
+			}
+		}
+	}; 
 
 	getIncidents = function() {
 		return incidents;

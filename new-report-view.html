@@ -3,90 +3,102 @@
 <div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
 
   <div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
-     <h4><span class="glyphicon glyphicon-edit"></span>&nbsp Report Incident</h4>
+	  <h4><span class="glyphicon glyphicon-edit"></span>&nbsp Report Incident</h4>
   </div> <!--panel heading end-->
   <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
 
   <div> <!--row1-->
   <div class="col-lg-3"> <!--column 1-->
-   <form class="form">
-    Person reporting <br>
-    <select name="reportedBy" 
-      ng-model="incident.reportedBy" 
-      class="form-control"
-      ng-options="leader.name as leader.name for leader in leaders">
-    </select> <br> 
+	<form class="form">
+	 Person reporting <br>
+	 <select name="reportedBy" 
+		ng-model="incident.reportedBy" 
+		class="form-control"
+		ng-options="leader.name as leader.name for leader in leaders">
+	 </select> <br> 
 
-   Student worker scheduler ID <br>
-   <input type="text" name="schedulerID" ng-model="incident.schedulerID" class="form-control"><br> 
+	Student worker's lab <br>
+	<select name="fromLab"
+		ng-model="incident.fromLab" 
+		class="select-block form-control">
+		<option ng-repeat="lab in labs" value={{lab.name}}>
+				{{lab.name}}
+		</option>
+		<option value="Pool">Pool</option>
+	</select> <br> 
 
-   Student worker name <br>
-   <input type="text" name="studentWorker" ng-model="incident.studentWorker" class="form-control"><br>
+	Student worker's scheduler ID <br>
+	<input type="text" 
+		name="schedulerID" 
+		ng-model="incident.schedulerID" 
+		class="form-control"
+		ng-change='findName(incident.schedulerID)'>
+	<br> 
+
+	Student worker's name <br>
+	<input type="text" 
+		name="studentWorker" 
+	 	ng-model="incident.studentWorker" 
+	 	class="form-control">
+	<br>
 
 
-   From Lab <br>
-   <select name="fromLab" 
-    ng-model="incident.fromLab" 
-    class="select-block form-control"
-    ng-options="lab.name as lab.name for lab in labs">
-   </select> <br> 
-
-   Date of incident <br>
-   <input name="date" type="date" ng-model="incident.date" class="form-control" id="myDate"><br> 
+	Date of incident <br>
+	<input name="date" type="date" ng-model="incident.date" class="form-control" id="myDate"><br> 
  
-    Incident Lab <br>
-    <select name="incidentLab" 
-      ng-model="incident.lab" 
-      class="select-block form-control"
-      ng-options="lab.name as lab.name for lab in labs"
-      ng-change="updateLabStations(incident.lab)">    
-    </select> <br> 
+	 Incident Lab <br>
+	 <select name="incidentLab" 
+		ng-model="incident.lab" 
+		class="select-block form-control"
+		ng-options="lab.name as lab.name for lab in labs"
+		ng-change="updateLabStations(incident.lab)">    
+	 </select> <br> 
  </div> <!--end of column 1-->
  
  <div  class="col-lg-3">  <!--column 2-->
 
-    Station <br>
-    <select name="station" 
-      ng-model="incident.station" 
-      class="select-block form-control"
-      ng-options="station for station in labStations">
-    </select> <br> 
+	 Station <br>
+	 <select name="station" 
+		ng-model="incident.station" 
+		class="select-block form-control"
+		ng-options="station for station in labStations">
+	 </select> <br> 
 
-    Shift start time <br>
-    <input name="shiftStartTime" type="time" ng-model="incident.shiftStart" class="form-control"> <br> 
+	 Shift start time <br>
+	 <input name="shiftStartTime" type="time" ng-model="incident.shiftStart" class="form-control"> <br> 
   
-    Student worker has<br>
-    <input type="radio" 
-      name="status" 
-      ng-model="incident.arrivalStatus" 
-      value="pending"> 
-      not arrived yet <br>
-    <input type="radio" 
-      name="status" 
-      ng-model="incident.arrivalStatus" 
-      value="missed"> 
-      missed entire shift or is not comming <br>
-    <input type="radio" 
-      name="status" 
-      ng-model="incident.arrivalStatus" 
-      value="late"> 
-    arived late <br><br>
-    
-    <div ng-if="incident.arrivalStatus === 'late'">
-      Arrival time: <br>
-      <input name="arrivalTime" type="time" ng-model="incident.shiftArrive"  class="form-control" id="myTime"> <br> 
-    </div>
+	 Student worker has<br>
+	 <input type="radio" 
+		name="status" 
+		ng-model="incident.arrivalStatus" 
+		value="pending"> 
+		not arrived yet <br>
+	 <input type="radio" 
+		name="status" 
+		ng-model="incident.arrivalStatus" 
+		value="missed"> 
+		missed entire shift or is not comming <br>
+	 <input type="radio" 
+		name="status" 
+		ng-model="incident.arrivalStatus" 
+		value="late"> 
+	 arived late <br><br>
+	 
+	 <div ng-if="incident.arrivalStatus === 'late'">
+		Arrival time: <br>
+		<input name="arrivalTime" type="time" ng-model="incident.shiftArrive"  class="form-control" id="myTime"> <br> 
+	 </div>
   
-    Incident type <br>
-    <select name="type" 
-      ng-model="incident.type" 
-      class="form-control"
-      ng-options="type.value as type.label for type in incedentTypes">
-    </select> <br> 
+	 Incident type <br>
+	 <select name="type" 
+		ng-model="incident.type" 
+		class="form-control"
+		ng-options="type.value as type.label for type in incedentTypes">
+	 </select> <br> 
   
-    Called: 
-    <input type="radio" name="called" ng-model="incident.called" value="no" checked>no 
-    <input type="radio" name="called" ng-model="incident.called" value="yes">yes <br>
+	 Called: 
+	 <input type="radio" name="called" ng-model="incident.called" value="no" checked>no 
+	 <input type="radio" name="called" ng-model="incident.called" value="yes">yes <br>
  </div> <!-- end of column 2 -->
 
 <div  class="col-lg-6">  <!--Coumn 3-->

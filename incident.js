@@ -110,9 +110,25 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 	};
 
 
-	$scope.submit = function(incidentToOpen) {
+	$scope.submit = function() {
+		var date = $scope.incident.date,
+			 time = $scope.incident.shiftStart;
 
-		//$scope.incident.shiftArrive = 'pending';
+		$scope.incident.timeStamp = 
+			moment(date +' '+ time,'YYYY-MM-DD HH:mm').unix();
+		
+
+		if($scope.incident.reason === '') {
+			$scope.incident.reason = 'No reason given';
+		}
+
+		if($scope.incident.arrivalStatus === 'pending') {
+			$scope.incident.shiftArrive = 'Pending';
+		} else if ($scope.incident.arrivalStatus === 'missed') {
+			$scope.incident.shiftArrive = 'Missed shift';
+		}
+
+
 
 		//initialize all time data for first comment and who it is by
 		$scope.incident.comments[0].date = 
@@ -122,7 +138,7 @@ app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
 		$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
 		$scope.incident.comments[0].by = $scope.incident.reportedBy; 
 		
-		incidentManager.openIncident(incidentToOpen);
+		incidentManager.openIncident($scope.incident);
 		incidentManager.makeNewIncident();
 		$scope.incident = incidentManager.newIncident; 
 	};
@@ -137,9 +153,9 @@ app.controller('CurrentCtrl', function($scope, $location, incidentManager){
 
 	$scope.incidents = incidentManager.incidents; 
 
-	$scope.setFocus = function(index) {
-		incidentManager.incidentOfFocus = $scope.incidents[index];
-		incidentManager.indexOfFocus = index;
+	$scope.setFocus = function(incident) {
+		incidentManager.incidentOfFocus = incident;
+		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
 	};
 
 });
@@ -279,19 +295,11 @@ app.filter('toStandardTime', function() {
 	var toStandardTime;
   
 	toStandardTime = function(milTime) {
-		var out, milTmRegex, hours24, hours, amPm, minutes; 
-		milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
-
+		var milTmRegex = /^[0-9]{2}:[0-9]{2}$/; 
 		if (milTmRegex.test(milTime)) {
-			hours24 = parseInt(milTime.slice(0,2));
-			hours = ((hours24 + 11) % 12) + 1;
-			amPm = hours24 > 11 ? ' PM' : ' AM';
-			minutes = milTime.slice(3,5);
-			
-			return hours + ':' + minutes + amPm;
-
+			return  moment(milTime, 'HH:mm').format('h:mm A');
 		  } else {
-			return miltime; 
+			return milTime; 
 		}
 	};
 
@@ -328,6 +336,7 @@ app.service('incidentManager', function() {
 			by: 'Tobias',
 			date: '15:00',
 			time: '15:00',
+			timeStamp: '',
 			subject: 'Initial Comment',
 			body: '',
 			new: false
@@ -343,10 +352,10 @@ app.service('incidentManager', function() {
 			fromLab: 'BLOC',
 			fullID: '', //fromLab-schedulerID
 			lab: 'BLOC', //SCC, Pool, WCL
-			station: 'Help Desk', 
+			station: 'Print Room', 
 			shiftStart: (moment(new Date()).format('HH:00')),
 			shiftArrive: (moment(new Date()).format('HH:30')),
-			arrivalStatus: 'pending',
+			arrivalStatus: 'pending', //missed, pending
 			type: 'Absent', //Tardy, Absent
 			openStatus: 'Open', //Open, Closed
 			sentEmail: 'no', //no, yes
@@ -355,7 +364,7 @@ app.service('incidentManager', function() {
 			summary: '',
 			comments: [],
 			emailLogs: [],
-			status: 'Unexcused', //Unexcused, Excused
+			status: 'Pending Review', //Pending Review, Unexcused, Excused
 			meetingDate: 'Pending', //if not pending date goes here
 		};
 
@@ -394,6 +403,17 @@ app.service('incidentManager', function() {
 
 
 });
+
+
+//............Pollyfill.....................
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(obj, start) {
+         for (var i = (start || 0), j = this.length; i < j; i++) {
+             if (this[i] === obj) { return i; }
+         }
+         return -1;
+    };
+}
 
 
 

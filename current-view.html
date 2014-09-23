@@ -11,7 +11,7 @@
 			<div class="col-lg-12" > <!--column 1-->
 				
 				
-				<div  ng-repeat="incident in incidents"> 
+				<div  ng-repeat="incident in incidents | orderBy:'timeStamp'"> 
 					<table class="table table-bordered table-condensed">
 						<tbody>
 							<tr> 
@@ -37,7 +37,7 @@
 									<a href="#/incident">
 										<span 
 											class="glyphicon glyphicon-plus-sign pull-right"
-											ng-click="setFocus($index)" 
+											ng-click="setFocus(incident)" 
 										></span>
 									</a> 
 							</tr>

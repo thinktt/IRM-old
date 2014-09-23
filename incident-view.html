@@ -85,7 +85,8 @@
 									
 								</td>
 								<td>
-									<span editable-date="incident.date">
+									<span editable-date="incident.date"
+										onaftersave="incident.timeStamp = makeTimeStamp(incident.date, incident.shiftStart)">
 										{{incident.date | date:'MMMM dd, yyyy'}} 
 									</span><br>
 									Shift Start: 

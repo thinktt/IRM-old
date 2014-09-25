@@ -47,116 +47,129 @@ app.controller('NavCtrl', function($scope,  $location){
 });
 
 
-app.controller('NewReportCtrl', function($scope,  $location, incidentManager){
-	var incidentTypes, incidentStatusTypes, labs;
+app.controller('NewReportCtrl', 
+	function($scope,  $location, $timeout, incidentManager){
+		var incidentTypes, incidentStatusTypes, labs;
 
-	$scope.incident = incidentManager.newIncident;
-	$scope.leaders = incidentManager.leaders; 
+		$scope.incident = incidentManager.newIncident;
+		$scope.leaders = incidentManager.leaders; 
 
-	$scope.incedentTypes = [
-		{value: 'Tardy', label: 'Tardy (5 min or more'}, 
-		{value: 'Absent', label:'Absent (15 min or more)'}, 
-		{value: 'Approachability', label: 'Approachability'}, 
-		{value: 'Dress Code', label: 'Dress Code'}
-	];
+		$scope.incedentTypes = [
+			{value: 'Tardy', label: 'Tardy (5 min or more'}, 
+			{value: 'Absent', label:'Absent (15 min or more)'}, 
+			{value: 'Approachability', label: 'Approachability'}, 
+			{value: 'Dress Code', label: 'Dress Code'}
+		];
 
-	$scope.incidentStatusTypes = [
-		'Pending Review',
-		'Unexcused',
-		'Excused'
-	];
+		$scope.incidentStatusTypes = [
+			'Pending Review',
+			'Unexcused',
+			'Excused'
+		];
 
-	$scope.fromLabs = [
-		{name: 'SCC'},
-		{name: 'BLOC'},
-		{name: 'WCL'},
-		{name: 'POOL'}
-	];
+		$scope.fromLabs = [
+			{name: 'SCC'},
+			{name: 'BLOC'},
+			{name: 'WCL'},
+			{name: 'POOL'}
+		];
 
-	$scope.labs = [
-		{
-			name: 'SCC', 
-			stations: ['Print Room', 'Info', 'Resource']
-		},
-		{
-			name: 'BLOC', 
-			stations: ['Print Room','Help Desk', 'ZACH']
-		},
-		{
-			name: 'WCL', 
-			stations: ['Print Room', 'Help Desk']
-		}
-	];
+		$scope.labs = [
+			{
+				name: 'SCC', 
+				stations: ['Print Room', 'Info', 'Resource']
+			},
+			{
+				name: 'BLOC', 
+				stations: ['Print Room','Help Desk', 'ZACH']
+			},
+			{
+				name: 'WCL', 
+				stations: ['Print Room', 'Help Desk']
+			}
+		];
 
-	//when the incdient lab changes this keeps the station list updated
-	$scope.updateLabStations = function(selectedLab) {
-		var i; 
-		for(i =0; i < $scope.labs.length; i++){
-			if(selectedLab === $scope.labs[i].name ) {
-				$scope.labStations = $scope.labs[i].stations;
-				$scope.incident.station = $scope.labStations[0];
+		//when the incdient lab changes this keeps the station list updated
+		$scope.updateLabStations = function(selectedLab) {
+			var i; 
+			for(i =0; i < $scope.labs.length; i++){
+				if(selectedLab === $scope.labs[i].name ) {
+					$scope.labStations = $scope.labs[i].stations;
+					$scope.incident.station = $scope.labStations[0];
+				} 
+			}
+		};
+
+		$scope.findName = function(ID) {
+			var name = incidentManager.searchNameByID(ID);
+			//if the search came back with something
+			if(name) {
+				$scope.incident.studentWorker = name; 
+			} else {
+				$scope.incident.studentWorker = '';
+			}
+		};
+
+
+		$scope.submit = function() {
+			var date, time; 
+
+			//check if form is valid
+			if($scope.newIncidentForm.$invalid) {
+				$scope.invalidSubmit=true;
+				return;
 			} 
-		}
-	};
 
-	$scope.findName = function(ID) {
-		var name = incidentManager.searchNameByID(ID);
-		//if the search came back with something
-		if(name) {
-			$scope.incident.studentWorker = name; 
-		} else {
-			$scope.incident.studentWorker = '';
-		}
-	};
+			date = $scope.incident.date;
+			time = $scope.incident.shiftStart;
 
+			$scope.incident.timeStamp = 
+				moment(date +' '+ time,'YYYY-MM-DD HH:mm').unix();
+			
 
-	$scope.submit = function() {
-		var date = $scope.incident.date,
-			 time = $scope.incident.shiftStart;
+			if($scope.incident.reason === '') {
+				$scope.incident.reason = 'No reason given';
+			}
 
-		$scope.incident.timeStamp = 
-			moment(date +' '+ time,'YYYY-MM-DD HH:mm').unix();
-		
-
-		if($scope.incident.reason === '') {
-			$scope.incident.reason = 'No reason given';
-		}
-
-		if($scope.incident.arrivalStatus === 'pending') {
-			$scope.incident.shiftArrive = 'Pending';
-		} else if ($scope.incident.arrivalStatus === 'missed') {
-			$scope.incident.shiftArrive = 'Missed shift';
-		}
+			if($scope.incident.arrivalStatus === 'pending') {
+				$scope.incident.shiftArrive = 'Pending';
+			} else if ($scope.incident.arrivalStatus === 'missed') {
+				$scope.incident.shiftArrive = 'Missed shift';
+			}
 
 
 
-		//initialize all time data for first comment and who it is by
-		$scope.incident.comments[0].date = 
-			(moment(new Date()).format('YYYY-MM-DD'));
-		$scope.incident.comments[0].time = 
-			(moment(new Date()).format('HH:mm'));
-		$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
-		$scope.incident.comments[0].by = $scope.incident.reportedBy; 
-		
-		incidentManager.openIncident($scope.incident);
-		incidentManager.makeNewIncident();
-		$scope.incident = incidentManager.newIncident; 
-	};
-
-	//when controller starts match the lab stations to the intial lab 
-	$scope.updateLabStations($scope.incident.lab); 	
-
-});
+			//initialize all time data for first comment and who it is by
+			$scope.incident.comments[0].date = 
+				(moment(new Date()).format('YYYY-MM-DD'));
+			$scope.incident.comments[0].time = 
+				(moment(new Date()).format('HH:mm'));
+			$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
+			$scope.incident.comments[0].by = $scope.incident.reportedBy; 
+			
+			incidentManager.openIncident($scope.incident);
+			incidentManager.makeNewIncident();
+			$scope.incident = incidentManager.newIncident;
+			$scope.validSubmit = true;
+			$scope.invalidSubmit = false;
+			$timeout(function(){$scope.validSubmit = false;}, 5000); 
+		};
 
 
-app.controller('CurrentCtrl', function($scope, $location, incidentManager){
+		//when controller starts match the lab stations to the intial lab 
+		$scope.updateLabStations($scope.incident.lab); 	
 
-	$scope.incidents = incidentManager.incidents; 
+	});
 
-	$scope.setFocus = function(incident) {
-		incidentManager.incidentOfFocus = incident;
-		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
-	};
+
+	app.controller('CurrentCtrl', function($scope, $location, incidentManager){
+
+		$scope.incidents = incidentManager.incidents; 
+
+		$scope.setFocus = function(incident) {
+			incidentManager.incidentOfFocus = incident;
+			incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
+		};
 
 });
 

@@ -14,19 +14,19 @@ app.config(['$routeProvider',
 	function($routeProvider) {
 		$routeProvider.
 			when('/report', {
-				templateUrl: 'new-report-view.html',
+				templateUrl: 'views/new-report-view.html',
 				controller: 'NewReportCtrl'
 			}).
 			when('/open', {
-				templateUrl: 'current-view.html',
+				templateUrl: 'views/current-view.html',
 				controller: 'CurrentCtrl'
 			}).
 			when('/view', {
-				templateUrl: 'report-view.html',
+				templateUrl: 'views/report-view.html',
 				controller: 'Ctrl'
 			}).
 			when('/incident', {
-				templateUrl: 'incident-view.html',
+				templateUrl: 'views/incident-view.html',
 				controller: 'Ctrl'
 			}).
 			otherwise({

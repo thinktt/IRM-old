@@ -22,14 +22,15 @@
 								<td>
 									From:
 									<span editable-select="incident.fromLab"
-										e-ng-options="lab.name as lab.name for lab in labs">
+										e-ng-options="lab.name as lab.name for lab in labs"
+										onaftersave="updateFullID()">
 										Lab: {{incident.fromLab}} 
 									</span> <br>
 								</td>
 								<td>
 									ID: 
 									<span editable-text="incident.schedulerID">
-										{{incident.schedulerID}}
+										{{incident.fullID}}
 									</span>
 								</td>
 								<td>

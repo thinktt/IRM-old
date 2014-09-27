@@ -126,6 +126,8 @@ app.controller('NewReportCtrl',
 			$scope.incident.timeStamp = 
 				moment(date +' '+ time,'YYYY-MM-DD HH:mm').unix();
 			
+			$scope.incident.fullID = 
+				$scope.incident.fromLab + '-' + $scope.incident.schedulerID;
 
 			if($scope.incident.reason === '') {
 				$scope.incident.reason = 'No reason given';
@@ -147,9 +149,14 @@ app.controller('NewReportCtrl',
 			$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
 			$scope.incident.comments[0].by = $scope.incident.reportedBy; 
 			
+			//add incident to open incidents and clear (really make a new)
+			//incident for the new report view
 			incidentManager.openIncident($scope.incident);
 			incidentManager.makeNewIncident();
 			$scope.incident = incidentManager.newIncident;
+			
+			//clear the invalid submit flag and add a 
+			//five second sucess submit flag
 			$scope.validSubmit = true;
 			$scope.invalidSubmit = false;
 			$timeout(function(){$scope.validSubmit = false;}, 5000); 
@@ -245,6 +252,11 @@ app.controller('Ctrl', function($scope, $location, incidentManager) {
 		if($scope.incident.meetingDate === '') {
 			$scope.incident.meetingDate = 'Pending';
 		} 
+	};
+
+	$scope.updateFullID = function() {
+		$scope.incident.fullID = 
+			$scope.incident.fromLab + '-' + $scope.incident.schedulerID;
 	};
 
 	$scope.addComment = function() {

@@ -34,18 +34,23 @@
 									</span>
 								</td>
 								<td>
+									<span
+										class="glyphicon glyphicon-share"
+										ng-click="submitIncident(incident)" 
+										ng-hide="ei.$visible"
+									>submit</span> &nbsp;								
 									<span 
-										class="glyphicon glyphicon-edit pull-right"
+										class="glyphicon glyphicon-edit"
 										ng-click="ei.$show()" 
 										ng-hide="ei.$visible"
-									></span> 
+									>edit</span>  
 									<a href="#/open">
 										<span
-											class="glyphicon glyphicon-share pull-right"
+											class="glyphicon glyphicon-minus-sign pull-right"
 											ng-click="ei.$show()" 
 											ng-hide="ei.$visible"
-										>&nbsp; </span>
-									</a>									
+										></span>
+									</a>
 									<span
 										ng-show="ei.$visible"
 										ng-disabled="ei.$waiting" 

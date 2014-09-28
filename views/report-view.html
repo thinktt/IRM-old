@@ -1,1 +1,52 @@
-<div></div>
+<div class="container container-pad">
+	<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
+
+		<div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
+			<h4><span class="glyphicon  glyphicon-folder-open"></span>&nbsp View Reports</h4>
+		</div> <!--panel heading end-->
+
+	 <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
+
+		<div> <!--row1-->
+			<div class="col-lg-12" > <!--column 1-->
+				
+				
+				<div  ng-repeat="incident in incidents | orderBy:'timeStamp' |filter:{openStatus:'Submitted'}"> 
+					<table class="table table-bordered table-condensed">
+						<tbody>
+							<tr> 
+								<td >
+									SW:
+									<span>
+										{{incident.studentWorker}}
+									</span>
+								</td>
+								<td>
+									ID:
+									<span>
+										{{incident.fullID}}
+									</span> <br>
+								</td>
+								<td>
+								</td>
+								<td>
+									<a href="#/incident">
+										<span 
+											class="glyphicon glyphicon-plus-sign pull-right"
+											ng-click="setFocus(incident)" 
+										></span>
+									</a> 
+							</tr>
+						
+						</tbody>
+					</table>
+					</div>
+
+
+
+			</div> <!-- end of column 3-->
+		</div> <!--end of row1-->
+
+	</div> <!--panel body end-->
+</div> <!--internal container end-->
+</div> <!-- /main container end -->

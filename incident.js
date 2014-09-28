@@ -23,7 +23,7 @@ app.config(['$routeProvider',
 			}).
 			when('/view', {
 				templateUrl: 'views/report-view.html',
-				controller: 'Ctrl'
+				controller: 'ReportCtrl'
 			}).
 			when('/incident', {
 				templateUrl: 'views/incident-view.html',
@@ -45,7 +45,6 @@ app.controller('NavCtrl', function($scope,  $location){
 		return viewLocation === $location.path();
 	};
 });
-
 
 app.controller('NewReportCtrl', 
 	function($scope,  $location, $timeout, incidentManager){
@@ -169,17 +168,20 @@ app.controller('NewReportCtrl',
 	});
 
 
-	app.controller('CurrentCtrl', function($scope, $location, incidentManager){
+app.controller('CurrentCtrl', function($scope, $location, incidentManager){
 
-		$scope.incidents = incidentManager.incidents; 
+	$scope.incidents = incidentManager.incidents; 
 
-		$scope.setFocus = function(incident) {
-			incidentManager.incidentOfFocus = incident;
-			incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
-		};
+	$scope.setFocus = function(incident) {
+		incidentManager.incidentOfFocus = incident;
+		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
+	};
 
 });
 
+app.controller('ReportCtrl', function($scope,  $location, incidentManager) {
+	$scope.incidents = incidentManager.incidents; 
+});
 
 
 app.controller('Ctrl', function($scope, $location, incidentManager) {
@@ -312,6 +314,10 @@ app.controller('Ctrl', function($scope, $location, incidentManager) {
 		} 
 	};
 
+	$scope.submitIncident = function(incident) {
+		incident.openStatus = 'Submitted';
+		$location.path("/open");
+	};
 
 });
 
@@ -335,8 +341,7 @@ app.filter('toStandardTime', function() {
 //..............Services.................
 app.service('incidentManager', function() {
 
-	var incidents= [], 
-		 incidentOfFocus, indexOfFocus, i,
+	var incidentOfFocus, indexOfFocus, i,
 		 createIncident, getIncidents, getFocus;
 	
 	this.leaders = [
@@ -442,31 +447,34 @@ if (!Array.prototype.indexOf) {
 
 
 
-/*
 
-createIncident = function() {
+//..........Temp Global Dev Stuff.................
+var incidents = []; 
+
+var createIncident = function(name, ID) {
 		var incident = {
 			reportedBy: "Tobias",
 			userID: "thinktt",
-			date: '2014-09-07',
-			time: '15:00',
-			studentWorker: "Bob",
-			schedulerID: 652,
+			date: (moment(new Date()).format('YYYY-MM-DD')),
+			time: (moment(new Date()).format('HH:mm')),
+			studentWorker: name,
+			schedulerID: ID,
 			fromLab: 'BLOC',
+			fullID: 'Bloc-' + ID, //fromLab-schedulerID
 			lab: 'BLOC', //SCC, Pool, WCL
-			station: 'Help Desk', 
-			shiftStart: '15:00',
-			shiftArrive: '16:00',
-			arrivalStatus: 'pending',
+			station: 'Print Room', 
+			shiftStart: (moment(new Date()).format('HH:00')),
+			shiftArrive: (moment(new Date()).format('HH:30')),
+			arrivalStatus: 'pending', //missed, pending
 			type: 'Absent', //Tardy, Absent
-			openStatus: 'Open', //Open, Closed
+			openStatus: 'Submitted', //Open, Submitted
 			sentEmail: 'no', //no, yes
 			called: 'no', //no, yes
-			reason: 'Missed the bus',
+			reason: 'none',
 			summary: '',
 			comments: [],
 			emailLogs: [],
-			status: 'Unexcused', //Unexcused, Excused
+			status: 'Pending Review', //Pending Review, Unexcused, Excused
 			meetingDate: 'Pending', //if not pending date goes here
 		};
 
@@ -474,9 +482,12 @@ createIncident = function() {
 	};
 
 
+	var i, j; 
 	//load in a few dummy incidents 
 	for(i=0; i<3; i++) {
-		incidents[i] = createIncident(); 
+		for(j=0; j<5; j++) {
+			incidents.push(createIncident('Name'+i, i));
+		} 
 	}
 
 
@@ -494,4 +505,3 @@ function creatComment() {
 	return comment;
 }
  
-*/

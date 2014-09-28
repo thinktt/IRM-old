@@ -421,6 +421,40 @@ app.service('incidentManager', function() {
 		}
 	}; 
 
+	//sorts the incidents by fullID and returns the sorted incidents 
+	//(an array of arrays)
+	this.sortIncidents = function(incidents) {
+		var incidentsToSort = [],
+		    incidentsBeingSorted = [],
+		    incidentsSorted = [],
+		    incidentGroup = [],
+		    i, j, sortID;
+
+		//make a copy of incidents array containing same actual objects
+		for(i=0; i<incidents.length; i++) {
+			incidentsToSort.push(incidents[i]);
+		}
+
+
+		while(incidentsToSort.length !== 0) {
+			incidentsBeingSorted = incidentsToSort;
+			incidentsToSort = [];
+			sortID = incidentsBeingSorted[0].fullID;
+
+			for(i=0; i<incidentsBeingSorted.length; i++) {
+				if(incidentsBeingSorted[i].fullID === sortID) {
+					incidentGroup.push(incidentsBeingSorted[i]);
+				} else {
+					incidentsToSort.push(incidentsBeingSorted[i]);
+				}
+			}
+			incidentsSorted.push(incidentGroup);
+			incidentGroup = [];
+		}
+
+		return incidentsSorted;
+	};	
+
 	getIncidents = function() {
 		return incidents;
 	};
@@ -468,7 +502,7 @@ var createIncident = function(name, ID) {
 			shiftArrive: (moment(new Date()).format('HH:30')),
 			arrivalStatus: 'pending', //missed, pending
 			type: 'Absent', //Tardy, Absent
-			openStatus: 'Open', //Open, Submitted
+			openStatus: 'Submitted', //Open, Submitted
 			sentEmail: 'no', //no, yes
 			called: 'no', //no, yes
 			reason: 'none',

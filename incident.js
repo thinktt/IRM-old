@@ -306,7 +306,8 @@ app.controller('Ctrl', function($scope, $location, incidentManager) {
 		return moment(date + ' ' + time).unix();	
 	};
 
-	$scope.deleteIncident = function(index){
+	$scope.deleteIncident = function(incident){
+		var index = incidentManager.incidents.indexOf(incident);
 		if(confirm('Do you want to delete this incident?')) {
 			incidentManager.incidents.splice(index,1);
 			incidentManager.incidentOfFocus = {isDeleted: true};
@@ -467,7 +468,7 @@ var createIncident = function(name, ID) {
 			shiftArrive: (moment(new Date()).format('HH:30')),
 			arrivalStatus: 'pending', //missed, pending
 			type: 'Absent', //Tardy, Absent
-			openStatus: 'Submitted', //Open, Submitted
+			openStatus: 'Open', //Open, Submitted
 			sentEmail: 'no', //no, yes
 			called: 'no', //no, yes
 			reason: 'none',

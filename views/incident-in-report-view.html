@@ -2,7 +2,7 @@
 	<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
 
 		<div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
-			<h4><span class="glyphicon  glyphicon-asterisk"></span>&nbsp Current Open Incidents</h4>
+			<h4><span class="glyphicon  glyphicon-folder-open"></span>&nbsp View Reports</h4>
 		</div> <!--panel heading end-->
 
 	 <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
@@ -35,16 +35,17 @@
 								</td>
 								<td>
 									<span
-										class="glyphicon glyphicon-share"
-										ng-click="submitIncident(incident)" 
-										ng-hide="ei.$visible"
-									>submit</span> &nbsp;								
+										class="glyphicon glyphicon-asterisk"
+										ng-show="ei.$visible"
+										ng-disabled="ei.$waiting"
+										ng-click="ei.$cancel()"
+									>reopen</span> &nbsp;								
 									<span 
 										class="glyphicon glyphicon-edit"
 										ng-click="ei.$show()" 
 										ng-hide="ei.$visible"
 									>edit</span>  
-									<a href="#/open">
+									<a href="#/single-report">
 										<span
 											class="glyphicon glyphicon-minus-sign pull-right"
 											ng-click="ei.$show()" 

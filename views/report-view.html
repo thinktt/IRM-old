@@ -11,29 +11,32 @@
 			<div class="col-lg-12" > <!--column 1-->
 				
 				
-				<div  ng-repeat="incident in incidents | orderBy:'timeStamp' |filter:{openStatus:'Submitted'}"> 
+				<div > 
 					<table class="table table-bordered table-condensed">
 						<tbody>
-							<tr> 
+							<tr ng-repeat="report in reports"> 
 								<td >
 									SW:
 									<span>
-										{{incident.studentWorker}}
+										{{report.name}} &nbsp;ID:{{report.fullID}}
 									</span>
 								</td>
 								<td>
-									ID:
-									<span>
-										{{incident.fullID}}
-									</span> <br>
+									<span	class="glyphicon glyphicon-question-sign text-warning"
+									></span> {{report.pending}} &nbsp;&nbsp;
+									<span	class="glyphicon glyphicon-exclamation-sign text-danger"
+									></span> {{report.unexcused}} &nbsp;&nbsp;
+									<span	class="glyphicon glyphicon-ok-sign text-success"
+									></span> {{report.excused}}&nbsp;&nbsp;
+									<br>
 								</td>
 								<td>
 								</td>
 								<td>
-									<a href="#/incident">
+									<a href="#/single-report">
 										<span 
 											class="glyphicon glyphicon-plus-sign pull-right"
-											ng-click="setFocus(incident)" 
+											ng-click="setReportFocus(report)" 
 										></span>
 									</a> 
 							</tr>
@@ -41,7 +44,7 @@
 						</tbody>
 					</table>
 					</div>
-
+					
 
 
 			</div> <!-- end of column 3-->

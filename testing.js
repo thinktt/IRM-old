@@ -1,3 +1,5 @@
+//<tr ng-repeat="incident in incidentsSorted[2] | orderBy:'timeStamp' |filter:{openStatus:'Submitted'}"> 
+
 var incidents = []; 
 
 var createIncident = function(name, ID) {
@@ -5,6 +7,7 @@ var createIncident = function(name, ID) {
 			studentWorker: name,
 			schedulerID: ID,
 			fullID: 'BLOC-' + ID, //fromLab-schedulerID
+			status: "Unexcused"
 		};
 
 		return incident;
@@ -52,10 +55,48 @@ var sortIncidents = function(incidents) {
 	return incidentsSorted;
 };
 
-var incidentsSorted = sortIncidents(incidents); 
+var buildReportSummaries = function(incidentsSorted) {
+	var reportSummaries = [], 
+		i, j, pending, excused, unexcused;
+	
+	for(i=0; i<incidentsSorted.length; i++) {
+		pending = 0; 
+		unexcused = 0; 
+		excused = 0;
+		for(j=0; j<incidentsSorted[i].length; j++) {
+			switch(incidentsSorted[i][j].status){
+				case 'Pending Review':
+					pending++;
+					break;
+				case 'Unexcused' :
+					unexcused++;
+					break;
+				case 'Excused' :
+					excused++;
+					break;
+			}
+		}
 
-for(i=0; i<incidentsSorted.length; i++) {
-	console.log(incidentsSorted[i]);
+		reportSummaries[i] = {
+			ID: incidentsSorted[i][0].schedulerID,
+			FullID: incidentsSorted[i][0].fullID,
+			Name: incidentsSorted[i][0].studentWorker,
+			incidentTotal: incidentsSorted[i].length,
+			pending: pending,
+			unexcused: unexcused,
+			excused: excused,
+			incidents: incidentsSorted[i]
+		};
+	}
+	return reportSummaries;
+};
+
+var incidentsSorted = sortIncidents(incidents); 
+var reportSummaries = buildReportSummaries(incidentsSorted);
+
+
+for(i=0; i<reportSummaries.length; i++) {
+	console.log(reportSummaries[i]);
 	console.log();
 }
 

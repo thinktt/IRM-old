@@ -25,6 +25,14 @@ app.config(['$routeProvider',
 				templateUrl: 'views/report-view.html',
 				controller: 'ReportCtrl'
 			}).
+			when('/single-report', {
+				templateUrl: 'views/single-report-view.html',
+				controller: 'ReportCtrl'
+			}).
+			when('/incident-in-report', {
+				templateUrl: 'views/incident-in-report-view.html',
+				controller: 'Ctrl'
+			}).
 			when('/incident', {
 				templateUrl: 'views/incident-view.html',
 				controller: 'Ctrl'
@@ -180,14 +188,45 @@ app.controller('CurrentCtrl', function($scope, $location, incidentManager){
 });
 
 app.controller('ReportCtrl', function($scope,  $location, incidentManager) {
+	var findReportOfFocus;
+
 	$scope.incidents = incidentManager.incidents; 
+	$scope.reports = incidentManager.buildReports($scope.incidents);
+
+	$scope.setReportFocus = function(report) {
+		incidentManager.reportOfFocusID = report.fullID;
+	};
+
+	$scope.setFocus = function(incident) {
+		incidentManager.incidentOfFocus = incident;
+		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
+	};
+
+	findReportOfFocus = function(fullID) {
+		var i;
+		for(i=0; i<$scope.reports.length; i++){
+			if($scope.reports[i].fullID === fullID) {
+				return $scope.reports[i];
+			}
+		}
+	};
+
+	$scope.reportOfFocus = findReportOfFocus(incidentManager.reportOfFocusID);
+
 });
 
 
-app.controller('Ctrl', function($scope, $location, incidentManager) {
+app.controller('Ctrl', function($scope, $location, $window, incidentManager) {
 	
 	$scope.incident = incidentManager.incidentOfFocus; 
 
+	$scope.$on('$locationChangeSuccess', function (e, next, previous) {
+        $scope.oldUrl = previous;
+        $scope.oldHash = $window.location.hash;
+
+        console.log('Howdy '+ $scope.oldUrl);
+        console.log($scope.oldHash);
+    });
 
 	$scope.leaders = [
 		 {name: 'Tobias'},
@@ -431,8 +470,11 @@ app.service('incidentManager', function() {
 		    i, j, sortID;
 
 		//make a copy of incidents array containing same actual objects
+		//filter out any open incidents
 		for(i=0; i<incidents.length; i++) {
-			incidentsToSort.push(incidents[i]);
+			if(incidents[i].openStatus !== 'Open'){
+				incidentsToSort.push(incidents[i]);
+			}
 		}
 
 
@@ -455,15 +497,41 @@ app.service('incidentManager', function() {
 		return incidentsSorted;
 	};	
 
-	getIncidents = function() {
-		return incidents;
-	};
+	this.buildReports = function(incidents) {
+		var reports = [],
+			 incidentsSorted = this.sortIncidents(incidents),  
+			 i, j, pending, excused, unexcused;
 
-	getFocus = function() {
-		return {
-			incident: incidentOfFocus,
-			index: indexOfFocus
-		};
+		for(i=0; i<incidentsSorted.length; i++) {
+			pending = 0; 
+			unexcused = 0; 
+			excused = 0;
+			for(j=0; j<incidentsSorted[i].length; j++) {
+				switch(incidentsSorted[i][j].status){
+					case 'Pending Review':
+						pending++;
+						break;
+					case 'Unexcused' :
+						unexcused++;
+						break;
+					case 'Excused' :
+						excused++;
+						break;
+				}
+			}
+
+			reports[i] = {
+				ID: incidentsSorted[i][0].schedulerID,
+				fullID: incidentsSorted[i][0].fullID,
+				name: incidentsSorted[i][0].studentWorker,
+				incidentTotal: incidentsSorted[i].length,
+				pending: pending,
+				unexcused: unexcused,
+				excused: excused,
+				incidents: incidentsSorted[i]
+			};
+		}
+		return reports;
 	};
 
 
@@ -487,6 +555,7 @@ if (!Array.prototype.indexOf) {
 var incidents = []; 
 
 var createIncident = function(name, ID) {
+		ID = '00' + ID;
 		var incident = {
 			reportedBy: "Tobias",
 			userID: "thinktt",
@@ -495,7 +564,7 @@ var createIncident = function(name, ID) {
 			studentWorker: name,
 			schedulerID: ID,
 			fromLab: 'BLOC',
-			fullID: 'Bloc-' + ID, //fromLab-schedulerID
+			fullID: 'BLOC-' + ID, //fromLab-schedulerID
 			lab: 'BLOC', //SCC, Pool, WCL
 			station: 'Print Room', 
 			shiftStart: (moment(new Date()).format('HH:00')),

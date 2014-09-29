@@ -41,7 +41,7 @@
 						<span class="glyphicon glyphicon-asterisk"></span>
 						&nbsp Current Open Incidents
 				</a></li>
-				<li ng-class="{ active: isActive('/view')}">
+				<li ng-class="{ active: isActive('/view') || isActive('/single-report') || isActive('/incident-in-report')}">
 					<a href="#/view">
 					<span class="glyphicon glyphicon-folder-open"></span> 
 					&nbsp View Reports

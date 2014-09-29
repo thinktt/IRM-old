@@ -3,10 +3,18 @@
 
 var app = angular.module("app", ["xeditable", "ngRoute"]);
 
-app.run(function(editableOptions, editableThemes) {
-  editableThemes.bs3.inputClass = 'input-sm';
-  editableThemes.bs3.buttonsClass = 'btn-sm';
-  editableOptions.theme = 'bs3';
+app.run(function($rootScope, editableOptions, editableThemes) {
+		editableThemes.bs3.inputClass = 'input-sm';
+		editableThemes.bs3.buttonsClass = 'btn-sm';
+		editableOptions.theme = 'bs3';
+
+		$rootScope.$on('$locationChangeSuccess', function (e, next, previous) {
+	      //a rather convoluted but clean way to extract everything
+	      //after the # from the previous url
+	      $rootScope.lastLocation = /#.*/.exec(previous)[0].substr(1);
+	      //$rootScope.oldHash = $window.location.hash;
+	      //$rootScope.lastLocation = $window.location.hash.substr(1);
+	    });
 });
 
 
@@ -216,17 +224,9 @@ app.controller('ReportCtrl', function($scope,  $location, incidentManager) {
 });
 
 
-app.controller('Ctrl', function($scope, $location, $window, incidentManager) {
-	
+app.controller('Ctrl', function($scope, $location, $rootScope, incidentManager){
+
 	$scope.incident = incidentManager.incidentOfFocus; 
-
-	$scope.$on('$locationChangeSuccess', function (e, next, previous) {
-        $scope.oldUrl = previous;
-        $scope.oldHash = $window.location.hash;
-
-        console.log('Howdy '+ $scope.oldUrl);
-        console.log($scope.oldHash);
-    });
 
 	$scope.leaders = [
 		 {name: 'Tobias'},
@@ -350,13 +350,13 @@ app.controller('Ctrl', function($scope, $location, $window, incidentManager) {
 		if(confirm('Do you want to delete this incident?')) {
 			incidentManager.incidents.splice(index,1);
 			incidentManager.incidentOfFocus = {isDeleted: true};
-			$location.path( "/open" );
+			$location.path($rootScope.lastLocation);
 		} 
 	};
 
 	$scope.submitIncident = function(incident) {
 		incident.openStatus = 'Submitted';
-		$location.path("/open");
+		$location.path($rootScope.lastLocation);
 	};
 
 });

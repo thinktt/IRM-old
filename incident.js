@@ -184,15 +184,17 @@ app.controller('NewReportCtrl',
 	});
 
 
-app.controller('CurrentCtrl', function($scope, $location, incidentManager){
+app.controller('CurrentCtrl', function($scope, $location, $filter, 
+	incidentManager){
+		$scope.incidents = incidentManager.incidents; 
 
-	$scope.incidents = incidentManager.incidents; 
+		$scope.openIncidents = 
+			$filter('filter')($scope.incidents, {openStatus:'Open'});
 
-	$scope.setFocus = function(incident) {
-		incidentManager.incidentOfFocus = incident;
-		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
-	};
-
+		$scope.setFocus = function(incident) {
+			incidentManager.incidentOfFocus = incident;
+			incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
+		};
 });
 
 app.controller('ReportCtrl', function($scope,  $location, incidentManager) {
@@ -356,6 +358,11 @@ app.controller('Ctrl', function($scope, $location, $rootScope, incidentManager){
 
 	$scope.submitIncident = function(incident) {
 		incident.openStatus = 'Submitted';
+		$location.path($rootScope.lastLocation);
+	};
+
+	$scope.reopenIncident = function(incident) {
+		incident.openStatus = 'Open';
 		$location.path($rootScope.lastLocation);
 	};
 

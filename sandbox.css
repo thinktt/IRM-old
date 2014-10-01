@@ -97,6 +97,17 @@ body {
     }
 }
 
+.comment_div {
+  background:white; 
+  padding:10px;
+  display:block;
+  white-space: pre-line;;
+}
+
+pre {
+  word-break: normal;
+}
+
 /*...................custom button colors..................*/
 .btn-custom-lighten.active {
   color: rgba(255, 255, 255, 0.75);
@@ -133,3 +144,4 @@ body {
 .btn-custom-lighten.active {
   background-color: #295b8d ;
 }
+

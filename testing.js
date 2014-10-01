@@ -1,124 +1,157 @@
-//<tr ng-repeat="incident in incidentsSorted[2] | orderBy:'timeStamp' |filter:{openStatus:'Submitted'}"> 
+var fs = require('fs');
+var moment = require('./js/moment');
 
-var incidents = []; 
+function creatComment() {
+	
+	var comment = {
+		by: 'Tobias',
+		date: '2014-09-07',
+		time: '15:00',
+		subject: 'Initial Comment',
+		body: 'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+		new: false
+	};
+
+	return comment;
+}
+ 
+var comments = [];
+comments.push(creatComment()); 
+
 
 var createIncident = function(name, ID) {
+		ID = '00' + ID;
 		var incident = {
+			reportedBy: "Tobias",
+			userID: "thinktt",
+			date: (moment(new Date()).format('YYYY-MM-DD')),
+			time: (moment(new Date()).format('HH:mm')),
 			studentWorker: name,
 			schedulerID: ID,
+			fromLab: 'BLOC',
 			fullID: 'BLOC-' + ID, //fromLab-schedulerID
-			status: "Unexcused"
+			lab: 'BLOC', //SCC, Pool, WCL
+			station: 'Print Room', 
+			shiftStart: (moment(new Date()).format('HH:00')),
+			shiftArrive: (moment(new Date()).format('HH:30')),
+			arrivalStatus: 'pending', //missed, pending
+			type: 'Absent', //Tardy, Absent
+			openStatus: 'Submitted', //Open, Submitted
+			sentEmail: 'no', //no, yes
+			called: 'no', //no, yes
+			reason: 'none',
+			summary: '',
+			comments: [],
+			emailLogs: [],
+			status: 'Pending Review', //Pending Review, Unexcused, Excused
+			meetingDate: 'Pending', //if not pending date goes here
 		};
+
 
 		return incident;
 	};
 
 
-	var i, j; 
-	//load in a few dummy incidents 
-	for(i=0; i<3; i++) {
-		for(j=0; j<5; j++) {
-			incidents.push(createIncident('Name'+i, i));
-		} 
+var parseText = function(textToParse, incident) {
+	var textArray, i, textIsValid,
+		validTexts = [ 
+			'Person Reporting',
+			'Your E-Mail Address',
+			'Subject',
+			'Date of Incident',
+			'Scheduler Station',
+			'Employee\'s Name',
+			'Which Lab does the worker belong to?',
+			'Scheduler ID#',
+			'Attendance Issue',
+			'Dress Code Issue',
+			'Approachability',
+			'Incident Details',
+			'Additional Notes' 
+		]; 
+
+	incident.comments.push({});	
+
+	try {
+		textArray = textToParse.split('\n'); 
+	} catch(err) {
+	  return; 
 	}
-
-
-var sortIncidents = function(incidents) {
-	var incidentsToSort = [],
-	    incidentsBeingSorted = [],
-	    incidentsSorted = [],
-	    incidentGroup = [],
-	    i, j, sortID;
-
-	//make a copy of incidents array containing same actual objects
-	for(i=0; i<incidents.length; i++) {
-		incidentsToSort.push(incidents[i]);
-	}
-
-
-	while(incidentsToSort.length !== 0) {
-		incidentsBeingSorted = incidentsToSort;
-		incidentsToSort = [];
-		sortID = incidentsBeingSorted[0].fullID;
-
-		for(i=0; i<incidentsBeingSorted.length; i++) {
-			if(incidentsBeingSorted[i].fullID === sortID) {
-				incidentGroup.push(incidentsBeingSorted[i]);
-			} else {
-				incidentsToSort.push(incidentsBeingSorted[i]);
-			}
-		}
-		incidentsSorted.push(incidentGroup);
-		incidentGroup = [];
-	}
-
-	return incidentsSorted;
-};
-
-var buildReportSummaries = function(incidentsSorted) {
-	var reportSummaries = [], 
-		i, j, pending, excused, unexcused;
 	
-	for(i=0; i<incidentsSorted.length; i++) {
-		pending = 0; 
-		unexcused = 0; 
-		excused = 0;
-		for(j=0; j<incidentsSorted[i].length; j++) {
-			switch(incidentsSorted[i][j].status){
-				case 'Pending Review':
-					pending++;
-					break;
-				case 'Unexcused' :
-					unexcused++;
-					break;
-				case 'Excused' :
-					excused++;
-					break;
-			}
+	//remove the return chars
+	for(i=0; i < textArray.length; i++) {
+		textArray[i] = textArray[i].slice(0,-1);
+	}
+
+
+	//validate the textToParse matches the incident email format
+	//checks every other line of first 24 lines agains validTexts
+	for(i=0; i < 23; i=i+2) {
+		if(textArray[i] === validTexts[(i/2)]) {
+			textIsValid = true;
+		} else {
+			textIsValid = false;
+			break; 
+		}
+	}
+
+
+	//pull out all the datas 
+	if(textIsValid) {
+		incident.reportedBy = textArray[1];
+		incident.email = textArray[3];
+		incident.date  = textArray[7].substr(0,12);
+		incident.shiftStart = textArray[7].substr(13,8);
+		incident.station = textArray[9];
+		incident.studentWorker = textArray[11];
+		incident.fromLab = textArray[13];
+		incident.schedulerID = textArray[15];
+		incident.type =   /Absent|Tardy/.exec(textArray[17])[0];
+		
+		//take all remaining texts and create the comment
+		incident.comments[0].body =  '';
+		for(i=23; i < textArray.length; i++) {
+			incident.comments[0].body =  
+				incident.comments[0].body + textArray[i] + '\n';
 		}
 
-		reportSummaries[i] = {
-			ID: incidentsSorted[i][0].schedulerID,
-			FullID: incidentsSorted[i][0].fullID,
-			Name: incidentsSorted[i][0].studentWorker,
-			incidentTotal: incidentsSorted[i].length,
-			pending: pending,
-			unexcused: unexcused,
-			excused: excused,
-			incidents: incidentsSorted[i]
-		};
+		//change dates and times to correct inicdent formats 
+		incident.date = 
+			moment(incident.date, 'MMM DD YYYY').format('YYYY-MM-DD;');
+		incident.shiftStart = 
+			moment(incident.shiftStart, 'H:mm A').format('HH:mm');
+
+		//replace long lab names with short lab names
+		incident.fromLab = 
+			incident.fromLab.replace('Blocker', 'BLOC');
+		incident.fromLab = 
+			incident.fromLab.replace('West Campus Library', 'WCL');
+
+		//fill in some comment details
+		incident.comments[0].by = incident.reportedBy;
+		incident.comments[0].date = incident.date;
+		incident.comments[0].time = incident.shiftStart;
+
+		incident.fullID = incident.fromLab + '-' + incident.schedulerID; 
+
+
+	} else {
+		return;
 	}
-	return reportSummaries;
+
+	return incident; 
 };
 
-var incidentsSorted = sortIncidents(incidents); 
-var reportSummaries = buildReportSummaries(incidentsSorted);
 
 
-for(i=0; i<reportSummaries.length; i++) {
-	console.log(reportSummaries[i]);
-	console.log();
+var incident = createIncident('Joe', '656'); 
+var textToParse = fs.readFileSync('testing.txt', 'utf8');
+
+incidentParsed = parseText(textToParse, incident); 
+
+if(incident) {
+	console.log(incidentParsed);
+} else {
+	console.log('Could not parse');
 }
 
-/*
-
-
-
-//console.log(arrayOfArrays);
-
-
-var array1 = [{one:'one'}],
-	array2 = [{two:'two'}],
-	array3 = [{three:'three'}],
-	arrayOfArrays = [];
-
-arrayOfArrays.push(array1);
-arrayOfArrays.push(array2);
-arrayOfArrays.push(array3);
-for(i=0; i<array2.length-2; i++) {
-	console.log(array2.splice(i,1)[0]);
-}
-
-*/
-//console.log(array2);
-//console.log(myArray);

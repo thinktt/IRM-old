@@ -5,7 +5,6 @@
 			  <h4><span class="glyphicon glyphicon-edit"></span>&nbsp; Report Incident</h4>
 		  </div> <!--panel heading end-->
 		  <div class="panel-body" id="IRPanelBody"> <!--panel pody-->
-			
 				<form class="form" name="newIncidentForm" novalidate>
 				
 					<div class="col-lg-3"> <!--column 1-->
@@ -127,18 +126,46 @@
 					  	class="form-control"
 					  	required> 
 					  </textarea> <br/>
-					</div>
+				  </div>
 				  <div>
-					  <button class="btn btn-large btn-custom-lighten" type="submit" ng-click="submit()">Open</button>
-					  <br/><br/>
-					  <div ng-show="invalidSubmit" 
-					  	class="alert alert-danger col-lg-10">
-					  		Please make sure required fields are filled in correctly
+					  <div>
+						  <button class="btn btn-large btn-custom-lighten" type="submit" ng-click="submit()">Open</button>
+						  <span class="pull-right">
+						  	<input type="checkbox" ng-model="parseBoxOn"> Use Parser
+						  </span>
+						  <br/><br/>
+						  <div ng-show="invalidSubmit" 
+						  	class="alert alert-danger col-lg-10">
+						  		Please make sure required fields are filled in correctly
+						  </div>
+						  <div ng-show="validSubmit" 
+						  	class="alert alert-success col-lg-10">
+						  		Incident has been opened 
+						  </div>
+						  <div ng-show="invalidParse" 
+							class="alert alert-danger col-lg-10">
+							Failed to parse text
+						  </div>
+						  <div ng-show="validParse" 
+						  	class="alert alert-success col-lg-10">
+							Text Parsed 
+						  </div>
 					  </div>
-					  <div ng-show="validSubmit" 
-					  	class="alert alert-success col-lg-10">
-					  		Incident has been opened
-					  </div>
+					  <div class="control-group" ng-show="parseBoxOn">
+						  <label for="textToParse">Email to parse <br/> </label>
+						  <textarea rows="10" 
+						  	cols="47" 
+						  	name="parseBox" 
+						  	ng-model="textToParse"
+						  	class="form-control"
+						  	id="textToParse"> 
+						  </textarea> <br/>
+						  <div>
+							  <button class="btn btn-large btn-custom-lighten"  ng-click="parseText(textToParse)">Parse
+							  </button>
+
+						  </div>
+						</div>
 				  </div>
 				</div> <!--end of column 3 -->
 				    

@@ -25,6 +25,10 @@ app.config(['$routeProvider',
 				templateUrl: 'views/new-report-view.html',
 				controller: 'NewReportCtrl'
 			}).
+			when('/parse', {
+				templateUrl: 'views/parse-view.html',
+				controller: 'NewReportCtrl'
+			}).
 			when('/open', {
 				templateUrl: 'views/current-view.html',
 				controller: 'CurrentCtrl'
@@ -64,7 +68,7 @@ app.controller('NavCtrl', function($scope,  $location){
 
 app.controller('NewReportCtrl', 
 	function($scope,  $location, $timeout, incidentManager){
-		var incidentTypes, incidentStatusTypes, labs;
+		var incidentTypes, incidentStatusTypes, labs, parseText;
 
 		$scope.incident = incidentManager.newIncident;
 		$scope.leaders = incidentManager.leaders; 
@@ -175,6 +179,161 @@ app.controller('NewReportCtrl',
 			$scope.validSubmit = true;
 			$scope.invalidSubmit = false;
 			$timeout(function(){$scope.validSubmit = false;}, 5000); 
+		};
+
+		
+		$scope.parseText = function(textToParse) {
+			var incident, comment;
+
+			//clears any message from previous attempt
+			//$scope.validParse = false;
+			//$scope.invalidParse = false; 
+
+			//the comment and incident here are temporary until 
+			//incidentManager.makeNewIncident() is fixed to work correctly
+				comment = {
+					by: 'Tobias',
+					date: '15:00',
+					time: '15:00',
+					timeStamp: '',
+					subject: 'Initial Comment',
+					body: '',
+					new: false
+				};
+
+			 	incident = {
+					reportedBy: "Tobias",
+					userID: "thinktt",
+					date: (moment(new Date()).format('YYYY-MM-DD')),
+					time: (moment(new Date()).format('HH:mm')),
+					studentWorker: "",
+					schedulerID: '',
+					fromLab: 'BLOC',
+					fullID: '', //fromLab-schedulerID
+					lab: 'BLOC', //SCC, Pool, WCL
+					station: 'Print Room', 
+					shiftStart: (moment(new Date()).format('HH:00')),
+					shiftArrive: (moment(new Date()).format('HH:30')),
+					arrivalStatus: 'pending', //missed, pending
+					type: 'Absent', //Tardy, Absent
+					openStatus: 'Open', //Open, Closed
+					sentEmail: 'no', //no, yes
+					called: 'no', //no, yes
+					reason: '',
+					summary: '',
+					comments: [],
+					emailLogs: [],
+					status: 'Pending Review', //Pending Review, Unexcused, Excused
+					meetingDate: 'Pending', //if not pending date goes here
+				};
+
+			incident.comments.push(comment); 
+
+
+			incident = parseText(textToParse, incident);
+
+
+			if (incident) {
+				$scope.validParse = 'true';
+				$timeout(function(){$scope.validParse = false;}, 5000);
+				$scope.incident = incident;
+				console.log('true');
+			} else {
+				$scope.invalidParse = 'true';
+				$timeout(function(){$scope.invalidParse = false;}, 5000);
+				console.log('false');
+			}			
+		};
+
+		//parse text function local to controller only 
+		parseText = function(textToParse, incident) {
+			var textArray, i, textIsValid,
+				validTexts = [ 
+					'Person Reporting',
+					'Your E-Mail Address',
+					'Subject',
+					'Date of Incident',
+					'Scheduler Station',
+					'Employee\'s Name',
+					'Which Lab does the worker belong to?',
+					'Scheduler ID#',
+					'Attendance Issue',
+					'Dress Code Issue',
+					'Approachability',
+					'Incident Details',
+					'Additional Notes' 
+				];
+
+
+			//incident.comments.push({});	
+
+			try {
+				textArray = textToParse.split('\n'); 
+			} catch(err) {
+			  return; 
+			}
+			
+			//remove the return chars
+			for(i=0; i < textArray.length; i++) {
+				textArray[i] = textArray[i];
+			}
+		
+			//validate the textToParse matches the incident email format
+			//checks every other line of first 24 lines agains validTexts
+			for(i=0; i < 23; i=i+2) {
+				if(textArray[i] === validTexts[(i/2)]) {
+					textIsValid = true;
+				} else {
+					textIsValid = false;
+					break; 
+				}
+			}
+
+
+			//pull out all the datas 
+			if(textIsValid) {
+				incident.reportedBy = textArray[1];
+				incident.email = textArray[3];
+				incident.date  = textArray[7].substr(0,12);
+				incident.shiftStart = textArray[7].substr(13,8);
+				incident.station = textArray[9];
+				incident.studentWorker = textArray[11];
+				incident.fromLab = textArray[13];
+				incident.schedulerID = textArray[15];
+				incident.type =   /Absent|Tardy/.exec(textArray[17])[0];
+				
+				//take all remaining texts and create the comment
+				incident.comments[0].body =  '';
+				for(i=23; i < textArray.length; i++) {
+					incident.comments[0].body =  
+						incident.comments[0].body + textArray[i] + '\n';
+				}
+
+				//change dates and times to correct inicdent formats 
+				incident.date = 
+					moment(incident.date, 'MMM DD YYYY').format('YYYY-MM-DD');
+				incident.shiftStart = 
+					moment(incident.shiftStart, 'H:mm A').format('HH:mm');
+
+				//replace long lab names with short lab names
+				incident.fromLab = 
+					incident.fromLab.replace('Blocker', 'BLOC');
+				incident.fromLab = 
+					incident.fromLab.replace('West Campus Library', 'WCL');
+
+				//fill in some comment details
+				incident.comments[0].by = incident.reportedBy;
+				incident.comments[0].date = incident.date;
+				incident.comments[0].time = incident.shiftStart;
+
+				incident.fullID = incident.fromLab + '-' + incident.schedulerID; 
+
+
+			} else {
+				return;
+			}
+
+			return incident; 
 		};
 
 

@@ -158,13 +158,15 @@ app.controller('NewReportCtrl',
 				$scope.incident.shiftArrive = 'Missed shift';
 			}
 
-
-
 			//initialize all time data for first comment and who it is by
-			$scope.incident.comments[0].date = 
-				(moment(new Date()).format('YYYY-MM-DD'));
-			$scope.incident.comments[0].time = 
-				(moment(new Date()).format('HH:mm'));
+			if(!$scope.incident.comments[0].date) {
+				$scope.incident.comments[0].date = 
+					(moment(new Date()).format('YYYY-MM-DD'));
+			}
+			if(!$scope.incident.comments[0].time) {
+				$scope.incident.comments[0].time = 
+					(moment(new Date()).format('HH:mm'));
+			}
 			$scope.incident.comments[0].timeStamp = moment(new Date()).unix();
 			$scope.incident.comments[0].by = $scope.incident.reportedBy; 
 			
@@ -186,8 +188,8 @@ app.controller('NewReportCtrl',
 			var incident, comment;
 
 			//clears any message from previous attempt
-			//$scope.validParse = false;
-			//$scope.invalidParse = false; 
+			$scope.validParse = false;
+			$scope.invalidParse = false; 
 
 			//the comment and incident here are temporary until 
 			//incidentManager.makeNewIncident() is fixed to work correctly
@@ -570,8 +572,8 @@ app.service('incidentManager', function() {
 
 		comment = {
 			by: 'Tobias',
-			date: '15:00',
-			time: '15:00',
+			date: '',
+			time: '',
 			timeStamp: '',
 			subject: 'Initial Comment',
 			body: '',

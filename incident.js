@@ -1,7 +1,7 @@
 
 //..............Configure the App.............................
 
-var app = angular.module("app", ["xeditable", "ngRoute"]);
+var app = angular.module("app", ["xeditable", "ngRoute", "ngStorage"]);
 
 app.run(function($rootScope, editableOptions, editableThemes) {
 		editableThemes.bs3.inputClass = 'input-sm';
@@ -72,7 +72,7 @@ app.controller('NewReportCtrl',
 
 		$scope.incident = incidentManager.newIncident;
 		$scope.leaders = incidentManager.leaders; 
-
+	
 		$scope.incedentTypes = [
 			{value: 'Tardy', label: 'Tardy (5 min or more'}, 
 			{value: 'Absent', label:'Absent (15 min or more)'}, 
@@ -547,11 +547,14 @@ app.filter('toStandardTime', function() {
 
 
 //..............Services.................
-app.service('incidentManager', function() {
+app.service('incidentManager', function($localStorage) {
 
 	var incidentOfFocus, indexOfFocus, i,
-		 createIncident, getIncidents, getFocus;
+		 createIncident, getIncidents, getFocus, 
+		 storage = $localStorage;
 	
+
+
 	this.leaders = [
 		 {name: 'Tobias'},
 		 {name: 'Cynthia'} ,
@@ -562,7 +565,9 @@ app.service('incidentManager', function() {
 		 {name: 'Nne'}
 	];
 
-	this.incidents = incidents; 
+	$localStorage.$default({incident: []});
+
+	this.incidents = $localStorage.incidents; 
 	this.indexOfFocus = 0; 
 	this.incidentOfFocus = {isDeleted: true};
 

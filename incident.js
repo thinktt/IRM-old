@@ -623,7 +623,8 @@ app.service('incidentManager', function($localStorage) {
 	};
 
 	this.searchNameByID = function (ID) {
-		var IDRegex = /^[0-9]{3}$/, i;
+		var IDRegex = /^[0-9]{3}$/, i, incidents;
+		incidents = this.incidents;
 		if (IDRegex.test(ID)) {
 			for(i=0; i<incidents.length; i++) {
 				if(incidents[i].schedulerID === ID) {

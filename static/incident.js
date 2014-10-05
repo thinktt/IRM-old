@@ -550,8 +550,7 @@ app.filter('toStandardTime', function() {
 app.service('incidentManager', function($localStorage) {
 
 	var incidentOfFocus, indexOfFocus, i,
-		 createIncident, getIncidents, getFocus, 
-		 storage = $localStorage;
+		 createIncident, getIncidents, getFocus;
 	
 
 
@@ -565,7 +564,7 @@ app.service('incidentManager', function($localStorage) {
 		 {name: 'Nne'}
 	];
 
-	$localStorage.$default({incident: []});
+	$localStorage.$default({incidents: []});
 
 	this.incidents = $localStorage.incidents; 
 	this.indexOfFocus = 0; 

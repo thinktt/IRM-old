@@ -2,11 +2,15 @@ var express = require('express'),
     mongoose = require('mongoose'), 
     app = express(),
     port = Number(process.env.PORT || 3000),
-    mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/devdb',
+    mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
     secret = process.env.SESSION_SECRET || 'non-secret secret for dev only',
     env = process.env.NODE_ENV || 'development',
     db, mongoTest, sessionOptions, requireHttps
     ; 
+
+console.log(mongoUri);
+console.log(secret);
+console.log(env);
 
 
 //...........MongoDB Connection.....................
@@ -32,8 +36,7 @@ httpsRedirect = function (req, res, next) {
 //.............Express Stack.....................
 
 if(env === 'heroku') app.enable('trust proxy'); 
-
-app.use(httpsRedirect);
+if(env === 'heroku') app.use(httpsRedirect);
 
 app.use(require('express-session')({
     key: 'session',

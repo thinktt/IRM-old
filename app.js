@@ -1,58 +1,73 @@
 var express = require('express'),
     mongoose = require('mongoose'), 
     app = express(),
+    https = require('https'),
+    http = require('http'),
+    fs = require('fs'),
     port = Number(process.env.PORT || 3000),
+    securePort = Number(process.env.SECURE_PORT || 3443),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
     secret = process.env.SESSION_SECRET || 'non-secret secret for dev only',
     env = process.env.NODE_ENV || 'development',
-    db, mongoTest, sessionOptions, requireHttps
+    db, mongoTest, sessionOptions, requireHttps, sslOptions, httpsRedirect
     ; 
 
-console.log(mongoUri);
-console.log(secret);
-console.log(env);
+    sslOptions = {
+      key: fs.readFileSync('../cert/server.key'),
+      cert: fs.readFileSync('../cert/server.crt'),
+      ca: fs.readFileSync('../cert/ca.crt'),
+      requestCert: true,
+      rejectUnauthorized: false
+    };
 
 
 //...........MongoDB Connection.....................
-mongoose.connect(mongoUri);
+mongoose.connect(mongoUri, function (){
+    console.log('Connected to databse at ' + mongoUri);
+});
 db = mongoose.connection;
 db.on('error', function () {
   console.log('unable to connect to database at ' + mongoUri);
 });
 
 
-
 httpsRedirect = function (req, res, next) {
-	var host = req.host; 
-	if(env !== 'development' && !req.secure) {
-     return res.redirect('https://'+ host);
+  var host = req.host; 
+  if(!req.secure) {
+     return res.redirect('https://'+ host + ':' + securePort);
    }  
    return next();
 };
 
 
-
-
 //.............Express Stack.....................
-
-if(env === 'heroku') app.enable('trust proxy'); 
-if(env === 'heroku') app.use(httpsRedirect);
+app.use(httpsRedirect);
 
 app.use(require('express-session')({
     key: 'session',
     secret: secret,
     store: require('mongoose-session')(mongoose),
     saveUninitialized: true,
-  	resave: true
+    resave: true
 }));
 
 app.use('/', express.static('static/'));
 
 
-//..........Start Server..........................
-app.listen(port, function() {
-  console.log("app is listening on port " + port);
-  console.log('currently running in ' + env); 
+//..........Start Up Servers..........................
+//if this is heroku turn on trust proxy for https forwarding 
+//otherwise start up the node ssl server
+if(env === 'heroku') {
+  app.enable('trust proxy'); 
+} else {
+  https.createServer(sslOptions,app).listen(securePort, function(){
+    console.log('Secured connection on port ' + securePort);
+  });
+}
+
+http.createServer(app).listen(port, function() {
+    console.log('Unsecured connection on port ' + port); 
 });
 
-
+console.log('Running in eviroment '+env);
+console.log('Session secret is "' + secret + '"');

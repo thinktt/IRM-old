@@ -46,6 +46,7 @@ app.use(httpsRedirect);
 app.use(require('express-session')({
     key: 'session',
     secret: secret,
+    cookie: {secure: true, httpOnly: true},
     store: require('mongoose-session')(mongoose),
     saveUninitialized: true,
     resave: true

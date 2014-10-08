@@ -61,7 +61,7 @@ app.use('/', express.static('static/'));
 if(env === 'heroku') {
   app.enable('trust proxy'); 
 } else {
-  https.createServer(sslOptions,app).listen(securePort, function(){
+  https.createServer(sslOptions, app).listen(securePort, function(){
     console.log('Secured connection on port ' + securePort);
   });
 }
@@ -70,5 +70,5 @@ http.createServer(app).listen(port, function() {
     console.log('Unsecured connection on port ' + port); 
 });
 
-console.log('Running in eviroment '+env);
+console.log('Running in eviroment '+ env);
 console.log('Session secret is "' + secret + '"');

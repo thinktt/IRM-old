@@ -9,7 +9,8 @@
     "express": "~4.2.0",
     "mongoose": "~3.8.14",
     "express-session": "~1.7.2",
-    "mongoose-session": "0.0.1"
+    "mongoose-session": "0.0.1",
+    "bcryptjs": "*"
   },
   "engines": {
     "node": "0.10.x"

@@ -4,6 +4,7 @@ var express = require('express'),
     https = require('https'),
     http = require('http'),
     fs = require('fs'),
+    auth = require('auth')(mongoose),
     port = Number(process.env.PORT || 3000),
     securePort = Number(process.env.SECURE_PORT || 3443),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
@@ -41,6 +42,7 @@ httpsRedirect = function (req, res, next) {
 
 
 //.............Express Stack.....................
+app.use(express.logger('dev'));
 app.use(httpsRedirect);
 
 app.use(require('express-session')({
@@ -52,7 +54,10 @@ app.use(require('express-session')({
     resave: true
 }));
 
+app.use('/login', express.static('login/'));
+app.post('/login', auth.handlePost());
 app.use('/', express.static('static/'));
+
 
 
 //..........Start Up Servers..........................

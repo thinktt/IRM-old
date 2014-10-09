@@ -13,21 +13,17 @@
 	<script src="uib-test.js"> </script>
 </head>
 
-
 <body>
 
-  <div ng-app="app" ng-controller="BootUITester">
-		<datepicker ng-model="dt" 
-			min-date="minDate" 
-			show-weeks="true" 
-			class="well well-sm">
-		</datepicker>
-	</div>
+<div ng-controller="ModalCtrl">
+
+    <button class="btn btn-default" ng-click="open()">Open me!</button>
+    <button class="btn btn-default" ng-click="open('lg')">Large modal</button>
+    <button class="btn btn-default" ng-click="open('sm')">Small modal</button>
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+</div>
 
 </body>
-
-
-
 </html>
 
 

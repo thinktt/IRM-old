@@ -1,1 +1,9 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+/* Fix for Bootstrap 3 with Angular UI Bootstrap */
+
+.modal-header {
+	color: white;
+	background-color: #295b8d;
+}
+

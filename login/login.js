@@ -1,3 +1,5 @@
+//clear location hash
+history.pushState('', document.title, window.location.pathname); 
 
 //........................Log In Request...............
 $("#logIn #mainButton").click(function(event) {

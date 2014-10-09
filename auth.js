@@ -18,7 +18,6 @@ auth = function(mongoose) {
         passwordRegEx = /^[\u0020-\u007E]{8,256}$/,
         user;
 
-
     //validate post request
     if(req.body.postId === 'logIn' || 'register') {
       if(!usernameRegEx.test(username)) {
@@ -32,7 +31,6 @@ auth = function(mongoose) {
       res.send({reply:'invalid post'});
     }
 
-    
     //if this is a logIn post request
     if(req.body.postId === 'logIn') {
       

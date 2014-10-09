@@ -13,7 +13,7 @@ var express = require('express'),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
     secret = process.env.SESSION_SECRET || 'non-secret secret for dev only',
     env = process.env.NODE_ENV || 'development',
-    db, sessionOptions,  sslOptions, httpsRedirect
+    db, sessionOptions,  sslOptions, httpsRedirect, requireAuth
     ; 
 
     sslOptions = {
@@ -43,6 +43,7 @@ db.on('error', function () {
 });
 
 
+//...........Route Controllers......................
 httpsRedirect = function (req, res, next) {
   var host = req.host; 
   if(!req.secure) {
@@ -51,6 +52,17 @@ httpsRedirect = function (req, res, next) {
    return next();
 };
 
+requireAuth = function (req, res, next) {
+  var host = req.host;
+  console.log(req.host);
+  //avoid undefined user status
+  req.session.userStatus = req.session.userStatus || 'loggedOut'; 
+  //if cookies session id is not valid redirect to login page
+  if( req.session.userStatus !== 'loggedIn') { 
+     return res.redirect('https://' + host  + ':' + securePort +  '/login');
+  }
+  next(); 
+};
 
 //.............Express Stack.....................
 app.use(morgan('dev'));
@@ -61,6 +73,7 @@ app.use(require('express-session')(sessionOptions));
 //routes
 app.use('/login', express.static('login/'));
 app.post('/login', auth.handleLoginPost);
+app.use(requireAuth);
 app.use('/', express.static('static/'));
 
 

@@ -1,7 +1,8 @@
 var express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
-    mongoose = require('mongoose'), 
+    mongoose = require('mongoose'),
+    sessionStore = require('mongoose-session')(mongoose), 
     app = express(),
     https = require('https'),
     http = require('http'),
@@ -12,7 +13,7 @@ var express = require('express'),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
     secret = process.env.SESSION_SECRET || 'non-secret secret for dev only',
     env = process.env.NODE_ENV || 'development',
-    db, mongoTest, sessionOptions, requireHttps, sslOptions, httpsRedirect
+    db, sessionOptions,  sslOptions, httpsRedirect
     ; 
 
     sslOptions = {
@@ -23,6 +24,14 @@ var express = require('express'),
       rejectUnauthorized: false
     };
 
+    sessionOptions = {
+      key: 'session',
+      secret: secret,
+      cookie: {secure: true, httpOnly: true},
+      store: sessionStore,
+      saveUninitialized: true,
+      resave: true
+    };
 
 //...........MongoDB Connection.....................
 mongoose.connect(mongoUri, function (){
@@ -47,16 +56,9 @@ httpsRedirect = function (req, res, next) {
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(httpsRedirect);
+app.use(require('express-session')(sessionOptions));
 
-app.use(require('express-session')({
-    key: 'session',
-    secret: secret,
-    cookie: {secure: true, httpOnly: true},
-    store: require('mongoose-session')(mongoose),
-    saveUninitialized: true,
-    resave: true
-}));
-
+//routes
 app.use('/login', express.static('login/'));
 app.post('/login', auth.handleLoginPost);
 app.use('/', express.static('static/'));

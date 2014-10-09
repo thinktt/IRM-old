@@ -17,7 +17,7 @@ $("#logIn #mainButton").click(function(event) {
 	$("#logIn input[name=password]").val('');
 	
 	//if invalidly formatted username or password
-	//don't even bother th server
+	//don't even bother the server
 	if(!usernameRegEx.test(data.username)) {
 		$("#messageArea").html('Invalid username or password'); 
 		return; 
@@ -36,7 +36,8 @@ $("#logIn #mainButton").click(function(event) {
 		contentType: 'application/json; charset=utf-8',
 		success: function (res) {
 			if(res === 'user validated') {
-				$("#messageArea").html('You are now logged in'); 
+				window.location.replace("/Admin/index");
+				//$("#messageArea").html('You are now logged in'); 
 			}
 			else if(res === 'invalid login'){
 				$("#messageArea").html('Invalid username or password'); 

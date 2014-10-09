@@ -4,7 +4,8 @@
     "undef": true,
     "eqeqeq": true,
     "globals": {
-        "angular": false
+        "angular": false,
+        "$": false
 
     }
 }

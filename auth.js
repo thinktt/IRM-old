@@ -33,6 +33,7 @@ auth = function(mongoose) {
 
   //..................Handle Login Post Request.................
   function loginPost(req, res, next) {
+    console.log(req.body);
     var username = req.body.username,
         password = req.body.password,
         user;

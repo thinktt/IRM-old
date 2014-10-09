@@ -1,10 +1,12 @@
 var express = require('express'),
+    morgan = require('morgan'),
+    bodyParser = require('body-parser'),
     mongoose = require('mongoose'), 
     app = express(),
     https = require('https'),
     http = require('http'),
     fs = require('fs'),
-    auth = require('auth')(mongoose),
+    auth = require('./auth.js')(mongoose),
     port = Number(process.env.PORT || 3000),
     securePort = Number(process.env.SECURE_PORT || 3443),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
@@ -42,7 +44,8 @@ httpsRedirect = function (req, res, next) {
 
 
 //.............Express Stack.....................
-app.use(express.logger('dev'));
+app.use(morgan('dev'));
+app.use(bodyParser.json());
 app.use(httpsRedirect);
 
 app.use(require('express-session')({
@@ -55,7 +58,7 @@ app.use(require('express-session')({
 }));
 
 app.use('/login', express.static('login/'));
-app.post('/login', auth.handlePost());
+app.post('/login', auth.handleLoginPost);
 app.use('/', express.static('static/'));
 
 

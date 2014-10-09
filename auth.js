@@ -10,16 +10,21 @@ auth = function(mongoose) {
   var User = mongoose.model('User', userSchema); 
 
 
-  //..............Validate Login and Registration Post Req......................
-  function validatePost(req, res, next) {
-   var usernameRegEx = /^[a-z0-9_-]{3,16}$/,
-       passwordRegEx = /^[\u0020-\u007E]{8,256}$/;
+  //..................Handle Login Post Request.................
+  function handleLoginPost(req, res, next) {
+    var username = req.body.username,
+        password = req.body.password,
+        usernameRegEx = /^[a-z0-9_-]{3,16}$/,
+        passwordRegEx = /^[\u0020-\u007E]{8,256}$/,
+        user;
 
+
+    //validate post request
     if(req.body.postId === 'logIn' || 'register') {
-      if(!usernameRegEx.test(req.body.username)) {
+      if(!usernameRegEx.test(username)) {
         res.send({reply: 'invalid post'});
       }
-      if(!passwordRegEx.test(req.body.password)) {
+      if(!passwordRegEx.test(password)) {
         res.send({reply:'invalid post'}); 
       }
     } 
@@ -27,16 +32,6 @@ auth = function(mongoose) {
       res.send({reply:'invalid post'});
     }
 
-    next(); 
-  }
-
-
-  //..................Handle Login Post Request.................
-  function loginPost(req, res, next) {
-    console.log(req.body);
-    var username = req.body.username,
-        password = req.body.password,
-        user;
     
     //if this is a logIn post request
     if(req.body.postId === 'logIn') {
@@ -106,8 +101,7 @@ auth = function(mongoose) {
   }
 
   return {
-    validatePost: validatePost,
-    handleLoginPost: loginPost
+    handleLoginPost: handleLoginPost
   };
 };
 

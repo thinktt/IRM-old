@@ -73,10 +73,18 @@ app.controller('NavCtrl', function($scope,  $location){
 	};
 });
 
-app.controller('SignInCtrl', function($scope,  $location){
+app.controller('SignInCtrl', function($scope,  $location, $http){
+	//$scope.invalidSubmit = true; 
+	var data = {};
+	data.username = $scope.username;
+	data.password = $scope.password;
+	data.postId = 'logIn'; 
+		
 	$scope.submit = function() {
-		$scope.invalidSubmit = true; 
-		console.log('Howdy');
+		$http.post('/login', data).success(function(data, status) {
+			console.log(status); 
+		});
+
 	};
 });
 

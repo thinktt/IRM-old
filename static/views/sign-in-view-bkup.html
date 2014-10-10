@@ -1,0 +1,41 @@
+
+<div class="row">
+
+		
+	
+	<div class="container container-pad" class="col-lg-3"> <!--conatainer-pad-->
+		<div class="panel panel-default" id="IRPanel"> <!--panel conatainer-->
+				<div class="panel-heading" id="IRPanelHeading"> <!--panel heading-->
+					<h2><span class="glyphicon glyphicon-log-in"></span>&nbsp; Sign in</h2>
+				</div> <!--panel heading end-->
+				<div class="panel-body" id="IRPanelBody"> <!--panel pody-->
+					
+						<div class="col-lg-3"> <!--column 1-->
+							<form class="form" name="newIncidentForm" novalidate>
+							 Username<br/>
+							<input type="text" 
+								name="schedulerID" 
+								ng-model="incident.schedulerID" 
+								class="form-control"
+								ng-change='findName(incident.schedulerID)'
+							required>
+							Password <br/>
+							<input type="text" 
+								name="schedulerID" 
+								ng-model="incident.schedulerID" 
+								class="form-control"
+								ng-change='findName(incident.schedulerID)'
+							required>
+							<br/>
+
+							<button class="btn btn-large btn-custom-lighten"  ng-click="parseText(textToParse)">Sign in
+							</button>
+							</form>
+						</div>
+				</div>
+			</div>
+	</div>
+
+
+</div>
+

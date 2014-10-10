@@ -1,7 +1,7 @@
 
 //..............Configure the App.............................
 
-var app = angular.module("app", ["xeditable", "ngRoute", "ngStorage"]);
+var app = angular.module("app", ["xeditable", "ngRoute", "ngStorage", "ui.bootstrap"]);
 
 app.run(function($rootScope, editableOptions, editableThemes) {
 		editableThemes.bs3.inputClass = 'input-sm';
@@ -49,6 +49,11 @@ app.config(['$routeProvider',
 				templateUrl: 'views/incident-view.html',
 				controller: 'Ctrl'
 			}).
+			when('/sign-in', {
+				templateUrl: 'views/sign-in-view.html',
+				controller: 'SignInCtrl'
+			}).
+
 			otherwise({
 				redirectTo: '/report'
 			});
@@ -60,10 +65,16 @@ app.config(['$routeProvider',
 
 //......................App Controllers.............................
 
+
+
 app.controller('NavCtrl', function($scope,  $location){
 	$scope.isActive = function (viewLocation) { 
 		return viewLocation === $location.path();
 	};
+});
+
+app.controller('SignInCtrl', function($scope,  $location){
+
 });
 
 app.controller('NewReportCtrl', 

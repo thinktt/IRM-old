@@ -36,7 +36,7 @@ $("#logIn #mainButton").click(function(event) {
 		contentType: 'application/json; charset=utf-8',
 		success: function (res) {
 			if(res === 'user validated') {
-				window.location.replace("/Admin/index");
+				window.location.replace("/");
 				//$("#messageArea").html('You are now logged in'); 
 			}
 			else if(res === 'invalid login'){

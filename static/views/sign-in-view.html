@@ -9,24 +9,27 @@
             	<h2><span class="glyphicon glyphicon-log-in"></span>&nbsp; Sign in</h2>
             </div>
             <div class="panel-body in" id="panel-looking-info">
-	            <form class="form" name="newIncidentForm" novalidate>
-								 Username<br/>
-								<input type="text" 
-									name="schedulerID" 
-									ng-model="incident.schedulerID" 
-									class="form-control"
-									ng-change='findName(incident.schedulerID)'
-								required>
+	            <form class="form" name="signInForm" novalidate>
+								Username<br/>
+		            <div class="control-group" 
+		            	ng-class="{'has-error': invalidSubmit && signInForm.username.$invalid}">
+										<input type="text" 
+											name="username" 
+											ng-model="username" 
+											class="form-control"
+										required>
+								</div>
 								Password <br/>
-								<input type="text" 
-									name="schedulerID" 
-									ng-model="incident.schedulerID" 
-									class="form-control"
-									ng-change='findName(incident.schedulerID)'
-								required>
-								<br/>
-
-								<button class="btn btn-lg btn-custom-lighten" type="submit" ng-click="parseText(textToParse)">Sign in
+								<div class="control-group" 
+		            	ng-class="{'has-error': invalidSubmit && signInForm.password.$invalid}">
+										<input type="password" 
+											name="password" 
+											ng-model="password" 
+											class="form-control"
+										required>
+										<br/>
+								</div>
+								<button class="btn btn-lg btn-custom-lighten" type="submit" ng-click="submit()">Sign in
 								</button>
 							</form>
             </div>

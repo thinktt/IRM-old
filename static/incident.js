@@ -74,7 +74,10 @@ app.controller('NavCtrl', function($scope,  $location){
 });
 
 app.controller('SignInCtrl', function($scope,  $location){
-
+	$scope.submit = function() {
+		$scope.invalidSubmit = true; 
+		console.log('Howdy');
+	};
 });
 
 app.controller('NewReportCtrl', 

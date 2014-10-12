@@ -75,15 +75,40 @@ app.controller('NavCtrl', function($scope,  $location){
 
 app.controller('SignInCtrl', function($scope,  $location, $http){
 	//$scope.invalidSubmit = true; 
-	var data = {};
-	data.username = $scope.username;
-	data.password = $scope.password;
-	data.postId = 'logIn'; 
+	var startPassElm = document.getElementsByName("password")[0];
+
+	$scope.submit = function(e) {
+		var data = {};
+		console.log(e.target);
+		console.log($scope.username);
+		console.log($scope.password); 
+		data.username = $scope.username;
+		data.password = $scope.password;
+		data.postId = 'logIn'; 
+		data = JSON.stringify(data);
 		
-	$scope.submit = function() {
 		$http.post('/login', data).success(function(data, status) {
-			console.log(status); 
+			console.log(status);
+			console.log(data); 
 		});
+
+	};
+
+	$scope.thingsChanged = function() {
+		console.log('Something Changed');
+	};
+
+	$scope.test = function(e) {
+		var passElm = document.getElementsByName("password")[0];
+		var scope = angular.element(document.querySelector('#password')).scope();
+		
+		console.log('angular elem ' + scope.password);
+		console.log('original element ' + startPassElm.value);
+		console.log('in DOM: ' + passElm.value);
+		console.log('on scope: ' + $scope.password);
+		console.log(passElm === startPassElm);
+		//$scope.$apply();
+		//console.log('after apply: ' + $scope.password);
 
 	};
 });

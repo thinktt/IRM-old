@@ -11,7 +11,11 @@ app.run(function($rootScope, editableOptions, editableThemes) {
 		$rootScope.$on('$locationChangeSuccess', function (e, next, previous) {
 	      //a rather convoluted but clean way to extract everything
 	      //after the # from the previous url
-	      $rootScope.lastLocation = /#.*/.exec(previous)[0].substr(1);
+	      if(!previous) {
+	      	$rootScope.lastLocation = '/';
+	      } else {
+		      $rootScope.lastLocation = /#.*/.exec(previous)[0].substr(1);
+	      }
 	      //$rootScope.oldHash = $window.location.hash;
 	      //$rootScope.lastLocation = $window.location.hash.substr(1);
 	    });
@@ -53,9 +57,8 @@ app.config(['$routeProvider',
 				templateUrl: 'views/sign-in-view.html',
 				controller: 'SignInCtrl'
 			}).
-
 			otherwise({
-				redirectTo: '/report'
+				redirectTo: '/sign-in'
 			});
 	}]);
 
@@ -67,15 +70,27 @@ app.config(['$routeProvider',
 
 
 
-app.controller('NavCtrl', function($scope,  $location){
+app.controller('NavCtrl', function($scope,  $location, authMgmt){
+
+	//bind the authMgmt user info to the local scope
+	$scope.user = authMgmt;
+
+	$scope.singOut = function(){
+		$scope.user.username = '';
+		$scope.user.isLeader = false;
+		$scope.user.isSuper = false; 
+		$location.path('/sing-in');
+	};
+
 	$scope.isActive = function (viewLocation) { 
 		return viewLocation === $location.path();
 	};
 });
 
-app.controller('SignInCtrl', function($scope,  $location, $http){
-	//$scope.invalidSubmit = true; 
+app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 	var startPassElm = document.getElementsByName("password")[0];
+
+	if(authMgmt.username) $location.path('/report');
 
 	$scope.submit = function() {
 		var data = {};
@@ -89,11 +104,14 @@ app.controller('SignInCtrl', function($scope,  $location, $http){
 		//data.password = $scope.password;
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
-		console.log(data);
 
 		$http.post('/login', data).success(function(data, status) {
-			console.log(status);
-			console.log(data); 
+			if(data === 'user validated') {
+				authMgmt.username = $scope.username;
+				authMgmt.isLeader = true;
+				authMgmt.isSuper = true;
+				$location.path('/report');
+			}
 		});
 
 	};
@@ -102,8 +120,10 @@ app.controller('SignInCtrl', function($scope,  $location, $http){
 });
 
 app.controller('NewReportCtrl', 
-	function($scope,  $location, $timeout, incidentManager){
+	function($scope,  $location, $timeout, incidentManager, authMgmt){
 		var incidentTypes, incidentStatusTypes, labs, parseText;
+		
+		if(!authMgmt.username) $location.path('/sign-in');
 
 		$scope.incident = incidentManager.newIncident;
 		$scope.leaders = incidentManager.leaders; 
@@ -274,11 +294,9 @@ app.controller('NewReportCtrl',
 				$scope.validParse = 'true';
 				$timeout(function(){$scope.validParse = false;}, 5000);
 				$scope.incident = incident;
-				console.log('true');
 			} else {
 				$scope.invalidParse = 'true';
 				$timeout(function(){$scope.invalidParse = false;}, 5000);
-				console.log('false');
 			}			
 		};
 
@@ -381,9 +399,10 @@ app.controller('NewReportCtrl',
 
 
 app.controller('CurrentCtrl', function($scope, $location, $filter, 
-	incidentManager){
-		$scope.incidents = incidentManager.incidents; 
+	incidentManager, authMgmt){
+		if(!authMgmt.username) $location.path('/sign-in');
 
+		$scope.incidents = incidentManager.incidents; 
 		$scope.openIncidents = 
 			$filter('filter')($scope.incidents, {openStatus:'Open'});
 
@@ -393,174 +412,180 @@ app.controller('CurrentCtrl', function($scope, $location, $filter,
 		};
 });
 
-app.controller('ReportCtrl', function($scope,  $location, incidentManager) {
-	var findReportOfFocus;
+app.controller('ReportCtrl', function($scope,  $location, incidentManager, 
+	authMgmt) {
+		var findReportOfFocus;
+		if(!authMgmt.username) $location.path('/sign-in');
 
-	$scope.incidents = incidentManager.incidents; 
-	$scope.reports = incidentManager.buildReports($scope.incidents);
+		$scope.incidents = incidentManager.incidents; 
+		$scope.reports = incidentManager.buildReports($scope.incidents);
 
-	$scope.setReportFocus = function(report) {
-		incidentManager.reportOfFocusID = report.fullID;
-	};
+		$scope.setReportFocus = function(report) {
+			incidentManager.reportOfFocusID = report.fullID;
+		};
 
-	$scope.setFocus = function(incident) {
-		incidentManager.incidentOfFocus = incident;
-		incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
-	};
+		$scope.setFocus = function(incident) {
+			incidentManager.incidentOfFocus = incident;
+			incidentManager.indexOfFocus = $scope.incidents.indexOf(incident);
+		};
 
-	findReportOfFocus = function(fullID) {
-		var i;
-		for(i=0; i<$scope.reports.length; i++){
-			if($scope.reports[i].fullID === fullID) {
-				return $scope.reports[i];
+		findReportOfFocus = function(fullID) {
+			var i;
+			for(i=0; i<$scope.reports.length; i++){
+				if($scope.reports[i].fullID === fullID) {
+					return $scope.reports[i];
+				}
 			}
-		}
-	};
+		};
 
-	$scope.reportOfFocus = findReportOfFocus(incidentManager.reportOfFocusID);
+		$scope.reportOfFocus = 
+			findReportOfFocus(incidentManager.reportOfFocusID);
 
 });
 
 
-app.controller('Ctrl', function($scope, $location, $rootScope, incidentManager){
+app.controller('Ctrl', function($scope, $location, $rootScope, incidentManager, 
+	authMgmt){
 
-	$scope.incident = incidentManager.incidentOfFocus; 
+		if(!authMgmt.username) $location.path('/sign-in');
 
-	$scope.leaders = [
-		 {name: 'Tobias'},
-		 {name: 'Cynthia'} ,
-		 {name: 'Lauren'} ,
-		 {name: 'Ryan'} ,
-		 {name: 'Jeremiah'},
-		 {name: 'John'},
-		 {name: 'Nne'}
-	];
+		$scope.incident = incidentManager.incidentOfFocus; 
 
-	$scope.incedentTypes = [
-		'Absent', 
-		'Tardy', 
-		'Approachability', 
-		'Dress Code'
-	];
+		$scope.leaders = [
+			 {name: 'Tobias'},
+			 {name: 'Cynthia'} ,
+			 {name: 'Lauren'} ,
+			 {name: 'Ryan'} ,
+			 {name: 'Jeremiah'},
+			 {name: 'John'},
+			 {name: 'Nne'}
+		];
 
-	$scope.incidentStatusTypes = [
-		'Pending Review',
-		'Unexcused',
-		'Excused'
-	];
+		$scope.incedentTypes = [
+			'Absent', 
+			'Tardy', 
+			'Approachability', 
+			'Dress Code'
+		];
 
-	$scope.labs = [
-		{
-			name: 'SCC', 
-			stations: ['Print Room', 'Info', 'Resource']
-		},
-		{
-			name: 'BLOC', 
-			stations: ['Print Room','Help Desk', 'ZACH']
-		},
-		{
-			name: 'WCL', 
-			stations: ['Print Room', 'Help Desk']
-		},
-	];
+		$scope.incidentStatusTypes = [
+			'Pending Review',
+			'Unexcused',
+			'Excused'
+		];
 
-	 
+		$scope.labs = [
+			{
+				name: 'SCC', 
+				stations: ['Print Room', 'Info', 'Resource']
+			},
+			{
+				name: 'BLOC', 
+				stations: ['Print Room','Help Desk', 'ZACH']
+			},
+			{
+				name: 'WCL', 
+				stations: ['Print Room', 'Help Desk']
+			},
+		];
 
-	$scope.registerStationSelecter = function(stationSelecter) {
-		$scope.stationSelecter = stationSelecter;
-	};
+		 
 
-	$scope.updateLabStations = function(selectedLab) {
-		var i; 
-		for(i =0; i < $scope.labs.length; i++){
-			if(selectedLab === $scope.labs[i].name ) {
-				$scope.labStations = $scope.labs[i].stations;
-			} 
-		}
-	};
-
-	$scope.registerMeetingSelecter = function (meetingSelecter) {
-		$scope.meetingSelecter = meetingSelecter; 
-	};
-
-	$scope.clearMeetingSelecter = function() {
-		$scope.meetingSelecter.$data = ''; 
-	};
-
-	$scope.setMeetingPending = function() {
-		if($scope.incident.meetingDate === '') {
-			$scope.incident.meetingDate = 'Pending';
-		} 
-	};
-
-	$scope.updateFullID = function() {
-		$scope.incident.fullID = 
-			$scope.incident.fromLab + '-' + $scope.incident.schedulerID;
-	};
-
-	$scope.addComment = function() {
-		var comment = {
-			by: 'Tobias',
-			timeStamp: moment(new Date()).unix(),
-			date: moment(new Date()).format('YYYY-MM-DD'),
-			time: moment(new Date()).format('HH:mm'),
-			subject: '',
-			body: '',
-			new: true 
+		$scope.registerStationSelecter = function(stationSelecter) {
+			$scope.stationSelecter = stationSelecter;
 		};
 
-		$scope.incident.comments.push(comment); 
-	};
+		$scope.updateLabStations = function(selectedLab) {
+			var i; 
+			for(i =0; i < $scope.labs.length; i++){
+				if(selectedLab === $scope.labs[i].name ) {
+					$scope.labStations = $scope.labs[i].stations;
+				} 
+			}
+		};
 
-	$scope.clearNewStatus = function(index){
-		$scope.incident.comments[index].new = false;
-	};
+		$scope.registerMeetingSelecter = function (meetingSelecter) {
+			$scope.meetingSelecter = meetingSelecter; 
+		};
 
-	//this function is called on cancel. If it finds
-	//that the comment is a new comment it deletes it
-	$scope.checkForNew = function(index){
-		if($scope.incident.comments[index].new) {
+		$scope.clearMeetingSelecter = function() {
+			$scope.meetingSelecter.$data = ''; 
+		};
+
+		$scope.setMeetingPending = function() {
+			if($scope.incident.meetingDate === '') {
+				$scope.incident.meetingDate = 'Pending';
+			} 
+		};
+
+		$scope.updateFullID = function() {
+			$scope.incident.fullID = 
+				$scope.incident.fromLab + '-' + $scope.incident.schedulerID;
+		};
+
+		$scope.addComment = function() {
+			var comment = {
+				by: 'Tobias',
+				timeStamp: moment(new Date()).unix(),
+				date: moment(new Date()).format('YYYY-MM-DD'),
+				time: moment(new Date()).format('HH:mm'),
+				subject: '',
+				body: '',
+				new: true 
+			};
+
+			$scope.incident.comments.push(comment); 
+		};
+
+		$scope.clearNewStatus = function(index){
+			$scope.incident.comments[index].new = false;
+		};
+
+		//this function is called on cancel. If it finds
+		//that the comment is a new comment it deletes it
+		$scope.checkForNew = function(index){
+			if($scope.incident.comments[index].new) {
+				if(confirm('Do you want to delete this comment?')) {
+					$scope.incident.comments.splice(index,1);
+				} else {
+					$scope.incident.comments[index].new = false;
+				}
+			}
+		};
+
+
+		$scope.deleteComment = function(index){
 			if(confirm('Do you want to delete this comment?')) {
 				$scope.incident.comments.splice(index,1);
-			} else {
-				$scope.incident.comments[index].new = false;
-			}
-		}
-	};
+			} 
+		};
 
+		$scope.reFormat = function(unixTime) {
+			return moment.unix(unixTime).format('MM-DD-YYYY h:mm a');	
+		};
 
-	$scope.deleteComment = function(index){
-		if(confirm('Do you want to delete this comment?')) {
-			$scope.incident.comments.splice(index,1);
-		} 
-	};
+		$scope.makeTimeStamp = function(date, time) {
+			return moment(date + ' ' + time).unix();	
+		};
 
-	$scope.reFormat = function(unixTime) {
-		return moment.unix(unixTime).format('MM-DD-YYYY h:mm a');	
-	};
+		$scope.deleteIncident = function(incident){
+			var index = incidentManager.incidents.indexOf(incident);
+			if(confirm('Do you want to delete this incident?')) {
+				incidentManager.incidents.splice(index,1);
+				incidentManager.incidentOfFocus = {isDeleted: true};
+				$location.path($rootScope.lastLocation);
+			} 
+		};
 
-	$scope.makeTimeStamp = function(date, time) {
-		return moment(date + ' ' + time).unix();	
-	};
-
-	$scope.deleteIncident = function(incident){
-		var index = incidentManager.incidents.indexOf(incident);
-		if(confirm('Do you want to delete this incident?')) {
-			incidentManager.incidents.splice(index,1);
-			incidentManager.incidentOfFocus = {isDeleted: true};
+		$scope.submitIncident = function(incident) {
+			incident.openStatus = 'Submitted';
 			$location.path($rootScope.lastLocation);
-		} 
-	};
+		};
 
-	$scope.submitIncident = function(incident) {
-		incident.openStatus = 'Submitted';
-		$location.path($rootScope.lastLocation);
-	};
-
-	$scope.reopenIncident = function(incident) {
-		incident.openStatus = 'Open';
-		$location.path($rootScope.lastLocation);
-	};
+		$scope.reopenIncident = function(incident) {
+			incident.openStatus = 'Open';
+			$location.path($rootScope.lastLocation);
+		};
 
 });
 
@@ -582,6 +607,23 @@ app.filter('toStandardTime', function() {
 
 
 //..............Services.................
+app.factory('authMgmt', function authMgmtFactory($localStorage) {
+	var authMgmt;
+
+	if(!$localStorage.user) {
+		$localStorage.user = {
+			username: '',
+			fullName: '',
+			isSuper: false,
+			isLeader: false
+		};
+	}
+	authMgmt = $localStorage.user;
+
+	return authMgmt;
+});
+
+
 app.service('incidentManager', function($localStorage) {
 
 	var incidentOfFocus, indexOfFocus, i,

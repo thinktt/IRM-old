@@ -6,7 +6,8 @@
     "globals": {
         "angular": false,
         "$": false,
-        "moment": false
+        "moment": false,
+        "confirm": false
 
     }
 }

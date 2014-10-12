@@ -7,8 +7,6 @@ body {
 	
 }
 
-
-
 .panel.panel-default {
 	border-color: #295b8d; 
 }
@@ -22,6 +20,11 @@ body {
   background-color: #eee; 
 }
 
+/*for centering single columns*/
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
 
 /*.........Nav Bar Colors................*/
 

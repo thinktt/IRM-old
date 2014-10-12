@@ -21,32 +21,45 @@
 
 <body>
 <nav class="navbar navbar-default " role="navigation" ng-controller="NavCtrl">
- 
-	<!--div class="nav-content"--> <!--nav content-->
-	
-	<div class="row"> <!--navbar row-->
+ 	<div class="row" ng-show="!user.isLeader || !user.isSuper">
+    <div class="col-lg-3 col-centered">
+    	<span class="navbar-brand center">
+    		<strong>OAL</strong> Incident Report Manager
+    	</span>
+    </div>
+    </div>
+
+	<div class="row" ng-show="user.isLeader || user.isSuper"> <!--navbar row-->
 		<div class="col-lg-1"></div>
-			<div class="col-lg-11"> <!--column 1-->
-				<div class="navbar-header"><!--nav bar header-->
-					<a class="navbar-brand" href="#"><strong>OAL</strong> Incident Report Manager</a>
-				</div> <!--nav bar header end-->
- 
+		<div class="col-lg-11">
+			<div class="navbar-header" ng-class="">
+				<a class="navbar-brand" href="#"><strong>OAL</strong> Incident Report Manager</a>
+			</div> 
 			<ul class="nav navbar-nav ">
-				<li ng-class="{ active: isActive('/report')}">
-					<a href="#/report">
-						<span class="glyphicon glyphicon-edit"></span> 
-						&nbsp Report Incident
+				<li ng-class="{ active: isActive('/report')}" 
+					ng-show="user.isLeader || user.isSuper">
+						<a href="#/report">
+							<span class="glyphicon glyphicon-edit"></span> 
+							&nbsp; Report Incident
 				</a></li>
-				<li ng-class="{ active: isActive('/open') || isActive('/incident')}">
-					<a href="#/open">
-						<span class="glyphicon glyphicon-asterisk"></span>
-						&nbsp Current Open Incidents
+				<li ng-class="{ active: isActive('/open') || isActive('/incident')}" 
+					ng-show="user.isLeader || user.isSuper">
+						<a href="#/open">
+							<span class="glyphicon glyphicon-asterisk"></span>
+							&nbsp; Current Open Incidents
 				</a></li>
-				<li ng-class="{ active: isActive('/view') || isActive('/single-report') || isActive('/incident-in-report')}">
-					<a href="#/view">
-					<span class="glyphicon glyphicon-folder-open"></span> 
-					&nbsp View Reports
-					</a></li>
+				<li ng-class="{ active: isActive('/view') || isActive('/single-report') || isActive('/incident-in-report')}"
+					ng-show="user.isSuper">
+						<a href="#/view">
+						<span class="glyphicon glyphicon-folder-open"></span> 
+						&nbsp; View Reports
+				</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="" ng-click="singOut()">
+					<span class="glyphicon glyphicon-log-out"></span>
+					&nbsp;Sign Out &nbsp;&nbsp;&nbsp;&nbsp;
+				</a></li>
 			</ul>
 		</div> <!--column 1-->
 	</div> <!--navbar row end-->

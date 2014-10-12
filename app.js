@@ -1,5 +1,6 @@
 var express = require('express'),
     morgan = require('morgan'),
+    favicon = require('serve-favicon'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     sessionStore = require('mongoose-session')(mongoose), 
@@ -54,7 +55,6 @@ httpsRedirect = function (req, res, next) {
 
 requireAuth = function (req, res, next) {
   var host = req.host;
-  console.log(req.host);
   //avoid undefined user status
   req.session.userStatus = req.session.userStatus || 'loggedOut'; 
   //if cookies session id is not valid redirect to login page
@@ -69,6 +69,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(httpsRedirect);
 app.use(require('express-session')(sessionOptions));
+app.use(favicon('static/favicons/irm.ico'));
 
 //routes
 app.use('/login', express.static('login/'));

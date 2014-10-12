@@ -9,15 +9,18 @@ app.run(function($rootScope, editableOptions, editableThemes) {
 		editableOptions.theme = 'bs3';
 
 		$rootScope.$on('$locationChangeSuccess', function (e, next, previous) {
-	      //a rather convoluted but clean way to extract everything
-	      //after the # from the previous url
+	      //the following is rather convoluted but clean way to extract 
+	      //everything after the # from the previous url
+
+	      //just stuff starting with the hash
+	      previous = /#.*/.exec(previous)[0];
+	      //if no hash string just save as root
 	      if(!previous) {
 	      	$rootScope.lastLocation = '/';
 	      } else {
-		      $rootScope.lastLocation = /#.*/.exec(previous)[0].substr(1);
+	      	//chop the hash and we're good to go
+		      $rootScope.lastLocation = previous.substr(1);
 	      }
-	      //$rootScope.oldHash = $window.location.hash;
-	      //$rootScope.lastLocation = $window.location.hash.substr(1);
 	    });
 });
 

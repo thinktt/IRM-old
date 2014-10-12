@@ -77,16 +77,20 @@ app.controller('SignInCtrl', function($scope,  $location, $http){
 	//$scope.invalidSubmit = true; 
 	var startPassElm = document.getElementsByName("password")[0];
 
-	$scope.submit = function(e) {
+	$scope.submit = function() {
 		var data = {};
-		console.log(e.target);
-		console.log($scope.username);
-		console.log($scope.password); 
 		data.username = $scope.username;
-		data.password = $scope.password;
+		//This next line is for a very special use case...
+		//due to a conflict with a chrome extension and Angular, where the 
+		//extemsion switches out the password field in the DOM, but the 
+		//scope is not getting update, this hack just pulls the value directly
+		//out of the DOM. Bad code but will solve the problem for now. 	
+		data.password = document.getElementsByName("password")[0].value;
+		//data.password = $scope.password;
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
-		
+		console.log(data);
+
 		$http.post('/login', data).success(function(data, status) {
 			console.log(status);
 			console.log(data); 
@@ -94,23 +98,7 @@ app.controller('SignInCtrl', function($scope,  $location, $http){
 
 	};
 
-	$scope.thingsChanged = function() {
-		console.log('Something Changed');
-	};
 
-	$scope.test = function(e) {
-		var passElm = document.getElementsByName("password")[0];
-		var scope = angular.element(document.querySelector('#password')).scope();
-		
-		console.log('angular elem ' + scope.password);
-		console.log('original element ' + startPassElm.value);
-		console.log('in DOM: ' + passElm.value);
-		console.log('on scope: ' + $scope.password);
-		console.log(passElm === startPassElm);
-		//$scope.$apply();
-		//console.log('after apply: ' + $scope.password);
-
-	};
 });
 
 app.controller('NewReportCtrl', 

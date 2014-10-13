@@ -5,6 +5,7 @@ var express = require('express'),
     mongoose = require('mongoose'),
     sessionStore = require('mongoose-session')(mongoose), 
     app = express(),
+    io = require('socket.io'),
     https = require('https'),
     http = require('http'),
     fs = require('fs'),
@@ -14,7 +15,8 @@ var express = require('express'),
     mongoUri = process.env.MONGO_URI || 'mongodb://localhost/devdb',
     secret = process.env.SESSION_SECRET || 'non-secret secret for dev only',
     env = process.env.NODE_ENV || 'development',
-    db, sessionOptions,  sslOptions, httpsRedirect, requireAuth
+    db, sessionOptions,  sslOptions, httpsRedirect, requireAuth,
+    server, secureServer
     ; 
 
     sslOptions = {
@@ -72,27 +74,50 @@ app.use(require('express-session')(sessionOptions));
 app.use(favicon('static/favicons/irm.ico'));
 
 //routes
-app.use('/login', express.static('login/'));
 app.post('/login', auth.handleLoginPost);
-app.use(requireAuth);
 app.use('/', express.static('static/'));
+//app.use('/login', express.static('login/'));
+//app.use(requireAuth);
 
 
 
 //..........Start Up Servers..........................
-//if this is heroku turn on trust proxy for https forwarding 
-//otherwise start up the node ssl server
-if(env === 'heroku') {
-  app.enable('trust proxy'); 
-} else {
-  https.createServer(sslOptions, app).listen(securePort, function(){
-    console.log('Secured connection on port ' + securePort);
-  });
-}
-
-http.createServer(app).listen(port, function() {
+server = http.createServer(app).listen(port, function() {
     console.log('Unsecured connection on port ' + port); 
 });
 
+//if this is heroku turn on trust proxy for https forwarding 
+//otherwise start up the node ssl server
+if(env === 'heroku') {
+  app.enable('trust proxy');
+  //run sockets on regular server through trust proxy
+  io = io.listen(server);
+} else {
+  secureServer = 
+    https.createServer(sslOptions, app).listen(securePort,function(){
+      console.log('Secured connection on port ' + securePort);
+  });
+  //run sockets on secureServer  
+  io = io.listen(secureServer);
+}
+
 console.log('Running in eviroment '+ env);
 console.log('Session secret is "' + secret + '"');
+
+
+//............Set Up Sockets...............................
+io.on('connection', function (socket) {
+
+  socket.broadcast.emit('user connected');
+
+  socket.on('greeting', function (greeting, fn) {
+    console.log(greeting);
+    fn('Connection established!');
+  });
+
+  // socket.emit('greeting', { greeting: 'Howdy!' });
+  // socket.on('reply', function (data) {
+  //   console.log('client says ' + data.reply);
+  // });
+
+});

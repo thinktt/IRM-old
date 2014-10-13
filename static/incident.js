@@ -1,3 +1,5 @@
+/* global io */
+
 
 //..............Configure the App.............................
 
@@ -9,18 +11,15 @@ app.run(function($rootScope, editableOptions, editableThemes) {
 		editableOptions.theme = 'bs3';
 
 		$rootScope.$on('$locationChangeSuccess', function (e, next, previous) {
-	      //the following is rather convoluted but clean way to extract 
-	      //everything after the # from the previous url
-
-	      //just stuff starting with the hash
-	      previous = /#.*/.exec(previous)[0];
-	      //if no hash string just save as root
-	      if(!previous) {
-	      	$rootScope.lastLocation = '/';
-	      } else {
-	      	//chop the hash and we're good to go
-		      $rootScope.lastLocation = previous.substr(1);
-	      }
+	      //the following is rather confusing but clean way to extract 
+	      //everything after the # from the previous url. If there is no 
+	      //previous url an error is thrwon caught and handled,
+	      //bada bing bada boom!
+			try {
+				$rootScope.lastLocation = /#.*/.exec(previous)[0].substr(1);
+		  	} catch(err) {
+		  		$rootScope.lastLocation = '/';
+		  	} 
 	    });
 });
 
@@ -60,6 +59,10 @@ app.config(['$routeProvider',
 				templateUrl: 'views/sign-in-view.html',
 				controller: 'SignInCtrl'
 			}).
+			when('/test', {
+				templateUrl: 'views/test-view.html',
+				controller: 'TestCtrl'
+			}).
 			otherwise({
 				redirectTo: '/sign-in'
 			});
@@ -70,9 +73,6 @@ app.config(['$routeProvider',
 
 
 //......................App Controllers.............................
-
-
-
 app.controller('NavCtrl', function($scope,  $location, authMgmt){
 
 	//bind the authMgmt user info to the local scope
@@ -89,6 +89,37 @@ app.controller('NavCtrl', function($scope,  $location, authMgmt){
 		return viewLocation === $location.path();
 	};
 });
+
+app.controller('TestCtrl', function($scope,  $location, $http, authMgmt){
+	var socket; 
+
+	$scope.greeting = 'Howdy!';
+	
+	socket = io.connect('https://localhost');
+
+	socket.on('user connected', function() {
+		console.log('Someone else is connected!');
+	});
+ 
+	socket.on('connect', function () { 
+   	socket.emit('greeting', 'Client says Howdy!', function (data) {
+      	console.log(data); 
+    	});
+  	});
+
+
+
+  	// socket.on('greeting', function (data) {
+   //  	console.log('server says ' + data.greeting);
+    	
+   //  	socket.emit('reply', { reply: 'Wudup' }, function() {
+   //  		console.log('Code from client');
+   //  	});
+  	// });
+
+
+});
+
 
 app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 	var startPassElm = document.getElementsByName("password")[0];

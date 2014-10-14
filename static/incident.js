@@ -95,7 +95,7 @@ app.controller('TestCtrl', function($scope,  $location, $http, authMgmt){
 
 	$scope.greeting = 'Howdy!';
 
-	socket = io.connect('//' + $location.host());
+	socket = io.connect('http://' + $location.host());
 
 	socket.on('user connected', function() {
 		console.log('Someone else is connected!');

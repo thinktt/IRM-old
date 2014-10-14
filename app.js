@@ -76,7 +76,7 @@ app.use(favicon('static/favicons/irm.ico'));
 //routes
 app.post('/login', auth.handleLoginPost);
 app.use('/', express.static('static/'));
-//app.use('/login', express.static('login/'));
+app.use('/login', express.static('login/'));
 //app.use(requireAuth);
 
 

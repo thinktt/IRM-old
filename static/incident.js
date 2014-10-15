@@ -122,7 +122,6 @@ app.controller('TestCtrl', function($scope,  $location, $http, authMgmt){
 
 
 app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
-	var startPassElm = document.getElementsByName("password")[0];
 
 	if(authMgmt.username) $location.path('/report');
 
@@ -134,10 +133,13 @@ app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 		//extemsion switches out the password field in the DOM, but the 
 		//scope is not getting update, this hack just pulls the value directly
 		//out of the DOM. Bad code but will solve the problem for now. 	
-		data.password = document.getElementsByName("password")[0].value;
-		//data.password = $scope.password;
+		//data.password = document.getElementsByName("password")[0].value;
+		 $scope.$broadcast("bob");
+
+		data.password = $scope.password;
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
+		console.log($scope.password);
 
 		$http.post('/login', data).success(function(data, status) {
 			if(data === 'user validated') {
@@ -820,6 +822,24 @@ app.service('incidentManager', function($localStorage) {
 
 
 });
+
+//................Directives.......................
+app.directive("autofill", function () {
+    return {
+        require: "ngModel",
+        link: function (scope, element, attrs, ngModel) {
+            scope.$on("autofill-update", function() {
+                ngModel.$setViewValue(element.val());
+            });
+
+            scope.$on('bob', function() {
+            	console.log('Howdy');
+            });
+        }
+    };
+});
+
+
 
 
 //............Pollyfill.....................

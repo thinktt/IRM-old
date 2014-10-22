@@ -137,7 +137,6 @@ app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 		data.password = $scope.password;
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
-		console.log($scope.password);
 
 		$http.post('/login', data).success(function(data, status) {
 			if(data === 'user validated') {

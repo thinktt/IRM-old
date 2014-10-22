@@ -121,3 +121,43 @@ io.on('connection', function (socket) {
   // });
 
 });
+
+//.........Incident Mongoodse Model.............
+var commentSchema = mongoose.Schema({
+    by: String, //'Tobias',
+    date: String, // '2014-09-07',
+    time: String, // '15:00',
+    subject: String, // 'Initial Comment',
+    body: String, //'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+    new: Boolean
+  });
+
+
+  var incidentSchema = mongoose.Schema({  
+      reportedBy: String, //"Tobias",
+      userID: String, //"thinktt",
+      date: String, //(moment(new Date()).format('YYYY-MM-DD')),
+      time: String, // (moment(new Date()).format('HH:mm')),
+      studentWorker: String, //name,
+      schedulerID: String, //ID,
+      fromLab: String, //'BLOC',
+      fullID: String, //'BLOC-' + ID, //fromLab-schedulerID
+      lab: String, //'BLOC', //SCC, Pool, WCL
+      station: String, //'Print Room', 
+      shiftStart: String, //(moment(new Date()).format('HH:00')),
+      shiftArrive: String, //(moment(new Date()).format('HH:30')),
+      arrivalStatus: String, //'pending', //missed, pending
+      type: String, //'Absent', //Tardy, Absent
+      openStatus: String, //'Submitted', //Open, Submitted
+      sentEmail: String, //'no', //no, yes
+      called: String, //'no', //no, yes
+      reason: String, //'none',
+      summary: String, //'',
+      comments: [],
+      emailLogs: [],
+      status: String, //'Pending Review', //Pending Review, Unexcused, Excused
+      meetingDate: String, //'Pending', //if not pending date goes here
+  });
+  
+
+  //var User = mongoose.model('User', userSchema); 

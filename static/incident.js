@@ -127,15 +127,13 @@ app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 
 	$scope.submit = function() {
 		var data = {};
-		data.username = $scope.username;
 		//This next line is for a very special use case...
 		//due to a conflict with a chrome extension and Angular, where the 
-		//extemsion switches out the password field in the DOM, but the 
-		//scope is not getting update, this hack just pulls the value directly
-		//out of the DOM. Bad code but will solve the problem for now. 	
-		//data.password = document.getElementsByName("password")[0].value;
-		 $scope.$broadcast("bob");
+		//extemsion switches out the password field in the DOM, but the scope 
+		//is not getting update. This line uses a directive to update the DOM
+		$scope.$broadcast("autofill-update");
 
+		data.username = $scope.username;
 		data.password = $scope.password;
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
@@ -830,10 +828,6 @@ app.directive("autofill", function () {
         link: function (scope, element, attrs, ngModel) {
             scope.$on("autofill-update", function() {
                 ngModel.$setViewValue(element.val());
-            });
-
-            scope.$on('bob', function() {
-            	console.log('Howdy');
             });
         }
     };

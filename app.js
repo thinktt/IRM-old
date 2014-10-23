@@ -115,6 +115,18 @@ io.on('connection', function (socket) {
     fn('Connection established!');
   });
 
+  socket.on('incident', function (incident) {
+    var newIncident;
+    console.log(incident.date);
+    
+    newIncident = Incident(incident);
+    newIncident.save(function (err, incident) {
+      if(!err) {
+        console.log(incident._id);
+      }
+    });
+  });
+
   // socket.emit('greeting', { greeting: 'Howdy!' });
   // socket.on('reply', function (data) {
   //   console.log('client says ' + data.reply);
@@ -123,14 +135,6 @@ io.on('connection', function (socket) {
 });
 
 //.........Incident Mongoodse Model.............
-var commentSchema = mongoose.Schema({
-    by: String, //'Tobias',
-    date: String, // '2014-09-07',
-    time: String, // '15:00',
-    subject: String, // 'Initial Comment',
-    body: String, //'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
-    new: Boolean
-  });
 
 
   var incidentSchema = mongoose.Schema({  
@@ -153,11 +157,34 @@ var commentSchema = mongoose.Schema({
       called: String, //'no', //no, yes
       reason: String, //'none',
       summary: String, //'',
-      comments: [],
+      comments: [{
+        by: String, //'Tobias',
+        date: String, // '2014-09-07',
+        time: String, // '15:00',
+        subject: String, // 'Initial Comment',
+        body: String, //'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+        new: Boolean
+      }],
       emailLogs: [],
       status: String, //'Pending Review', //Pending Review, Unexcused, Excused
       meetingDate: String, //'Pending', //if not pending date goes here
   });
-  
 
-  //var User = mongoose.model('User', userSchema); 
+var Incident = mongoose.model('Incident', incidentSchema); 
+
+
+
+
+
+
+
+
+//var User = mongoose.model('User', userSchema); 
+// var commentSchema = mongoose.Schema({
+//     by: String, //'Tobias',
+//     date: String, // '2014-09-07',
+//     time: String, // '15:00',
+//     subject: String, // 'Initial Comment',
+//     body: String, //'He showed up 20 minutes late. He said he missed the bus. He called when he was on his way.',
+//     new: Boolean
+//   });

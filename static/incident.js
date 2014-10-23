@@ -105,7 +105,9 @@ app.controller('TestCtrl', function($scope,  $location, $http, authMgmt){
    	socket.emit('greeting', 'Client says Howdy!', function (data) {
       	console.log(data); 
     	});
-  	});
+
+   	socket.emit('incident', incident); 
+  });
 
 
 
@@ -884,12 +886,13 @@ var createIncident = function(name, ID) {
 
 
 	var i, j; 
-	//load in a few dummy incidents 
-	for(i=0; i<3; i++) {
-		for(j=0; j<5; j++) {
-			incidents.push(createIncident('Name'+i, i));
-		} 
-	}
+	
+	// //load in a few dummy incidents 
+	// for(i=0; i<3; i++) {
+	// 	for(j=0; j<5; j++) {
+	// 		incidents.push(createIncident('Name'+i, i));
+	// 	} 
+	// }
 
 
 function creatComment() {
@@ -906,3 +909,12 @@ function creatComment() {
 	return comment;
 }
  
+var comments = [];
+
+var incident = createIncident();
+
+for(i=0; i<3; i++) {
+	incident.comments[i] = creatComment();
+}
+
+

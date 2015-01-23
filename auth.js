@@ -9,6 +9,10 @@ auth = function(mongoose) {
   });
   var User = mongoose.model('User', userSchema); 
 
+  //....This function skips the auth and just says everything is valid
+  function easyIn(req, res, next) {
+     res.send('user validated'); 
+  }
 
   //..................Handle Login Post Request.................
   function handleLoginPost(req, res, next) {
@@ -99,7 +103,8 @@ auth = function(mongoose) {
   }
 
   return {
-    handleLoginPost: handleLoginPost
+    handleLoginPost: handleLoginPost,
+    easyIn: easyIn
   };
 };
 

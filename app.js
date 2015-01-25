@@ -14,8 +14,9 @@ var express = require('express'),
 //...........MongoDB Connection.....................
 mongoose.connect(mongoUri);
 db = mongoose.connection;
-db.on('error', function () {
+db.on('error', function (err) {
   console.log('unable to connect to database at ' + mongoUri);
+  console.log(err);
 });
 
 

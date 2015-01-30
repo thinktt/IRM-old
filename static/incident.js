@@ -125,6 +125,9 @@ app.controller('TestCtrl', function($scope,  $location, $http, authMgmt){
 
 app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 
+	$scope.username = 'guest';
+	$scope.password = 'xyzzy plover';
+
 	if(authMgmt.username) $location.path('/report');
 
 	$scope.submit = function() {

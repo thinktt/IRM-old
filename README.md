@@ -1,3 +1,5 @@
-# testSails
+# My Sails Sandbox
 
-a [Sails](http://sailsjs.org) application
+ This is my repo to play with [Sails](http://sailsjs.org)
+
+

@@ -6,10 +6,13 @@
 */
 
 module.exports = {
+	schema: true,
 
   attributes: {
   	text: {
-  		type: 'string'
+  		type: 'string',
+  		required: true,
+  		unique: true
   	}
 
   }

@@ -6,6 +6,10 @@
  */
 
 module.exports = {
+	sayHowdy: function (req, res) {
+		//return res.send('Howdy!');
+		return res.forbidden(); 
+	} 
 	
 };
 

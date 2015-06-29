@@ -35,16 +35,34 @@ module.exports = {
   	}
   },
 
-  afterValidate: function(values, cb) {
-    User.findOne({username: values.username}).exec(function(err, record) {
-      if (record) { 
-        err = {error: 'username in use'}; 
-        cb(err);
+  //lifecycle callback that checks to make sure the new user username 
+  //and email are not arlready in the database.
+  afterValidate: function(newUser, cb) {
+    User.findOne({
+      or: [
+        {username: newUser.username},
+        {email: newUser.email}
+      ]
+    })
+    .then(function(user) {
+      var err;
+      if(user && user.username === newUser.username) {
+        err = {error: "Username already in use", status: 400};
+        return cb(err); 
+      } else if(user && user.email === newUser.email) {
+        err = {error: "Email already in use", status: 400};
+        return cb(err); 
+      } else {
+        return cb(); 
       }
-      cb();
+          
+    })
+    .catch(function(err) {
+      cb(err);
     });
-  }
 
+  }
 
 };
 
+   

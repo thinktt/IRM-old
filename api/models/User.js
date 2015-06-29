@@ -33,7 +33,18 @@ module.exports = {
   		email: true,
   		unique: true
   	}
+  },
 
+  afterValidate: function(values, cb) {
+    User.findOne({username: values.username}).exec(function(err, record) {
+      if (record) { 
+        err = {error: 'username in use'}; 
+        cb(err);
+      }
+      cb();
+    });
   }
+
+
 };
 

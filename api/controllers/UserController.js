@@ -17,7 +17,6 @@ module.exports = {
 		var password = req.param('password');
 		var email = req.param('email');
 		var encryptedPassword;
-		console.log('howdy');
 		
 		require('machinepack-passwords').encryptPassword({
 			password: password
@@ -28,7 +27,6 @@ module.exports = {
 			},
 			
 			success: function(result) {
-				console.log(result);
 	
 				User.create({
 					username: username,
@@ -38,11 +36,11 @@ module.exports = {
 
 					//if error take care of it
 					if(err) {
-						if(err.invalidAttributes && err.invalidAttributes.username && err.invalidAttributes.username[0] 
-                  && err.invalidAttributes.username[0].rule === 'unique') {
+						if(err.invalidAttributes && err.invalidAttributes.username && err.invalidAttributes.username[0] &&
+                 	err.invalidAttributes.username[0].rule === 'unique') {
 							res.send('username already in use');
-						} else if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0]
-                  && err.invalidAttributes.email[0].rule === 'unique') {
+						} else if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] &&
+                  err.invalidAttributes.email[0].rule === 'unique') {
 							res.send('email already in use');
 						}
 

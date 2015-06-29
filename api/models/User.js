@@ -7,7 +7,32 @@
 
 module.exports = {
 
+	schema: true,
+
   attributes: {
+
+  	username: {
+  		type: 'string',
+  		lowercase: true,
+  		required: true,
+  		minLength: 3,
+  		maxLength: 16,
+  		unique: true,
+  		regex: /^[a-z0-9_-]{3,16}$/
+
+  	},
+
+  	encryptedPassword: {
+  		type: 'string',
+  		required: true
+  	},
+
+  	email: {
+  		type: 'string',
+  		lowercase: true,
+  		email: true,
+  		unique: true
+  	}
 
   }
 };

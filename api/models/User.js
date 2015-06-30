@@ -63,12 +63,12 @@ module.exports = {
     })
     //collect the query returns, if no users exist with this email
     //or username take note by marking the validator flags
-    .spread(function(usernameUser, emailUser){
+    .spread(function(userWithUsername, userWithEmail){
       
-      if(usernameUser) uniqueUsername = false;
+      if(userWithUsername) uniqueUsername = false;
       else uniqueUsername = true;
       
-      if(emailUser) uniqueEmail = false;
+      if(userWithEmail) uniqueEmail = false;
       else uniqueEmail = true;
 
       //continue to model validation

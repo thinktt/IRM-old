@@ -44,47 +44,41 @@ module.exports = {
   	},
 
   	email: {
-  		type: 'string',
+  		type: 'email',
       required: true,
   		lowercase: true,
-  		email: true,
   		unique: true,
-      emailNotInDB: true,
+      emailNotInDB: true
    	}
   },
 
   // lifecycle callback that checks to make sure the new users username 
   // and email are not arlready in the database
   beforeValidate: function(newUser, cb) {
-    // search for a duplicate username or a duplicate email
-    User.findOne({
-      or: [
-        {username: newUser.username},
-        {email: newUser.email}
-      ]
+    // search for a duplicate username or a duplicate email in the DB
+    User.findOne({username: newUser.username})
+    .then(function(usernameQuery){
+      var emailQuery = User.findOne({email: newUser.email});
+      return [usernameQuery, emailQuery];
     })
-    .exec(function(err, user) {
-
-      //if there was an error in the search return it
-      if(err) return cb(err);
+    //collect the query returns, if no users exist with this email
+    //or username take note by marking the validator flags
+    .spread(function(usernameUser, emailUser){
       
-      //if there is a matching username or email take note 
-      if(user) {
-        uniqueUsername = user.username !== newUser.username; 
-        uniqueEmail = user.email !== newUser.email; 
-
-      //if no user was found at all then all fields are go
-      } else {
-        uniqueUsername = true; 
-        uniqueEmail = true; 
-      }
+      if(usernameUser) uniqueUsername = false;
+      else uniqueUsername = true;
       
-      //continue to validatoins
+      if(emailUser) uniqueEmail = false;
+      else uniqueEmail = true;
+
+      //continue to model validation
       return cb();
+    })
+    .catch(function(err){
+      cb(err);
     });
- 
+
   }
 
 };
-
-   
+    

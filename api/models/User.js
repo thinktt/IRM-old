@@ -17,11 +17,9 @@ module.exports = {
   //custom validation types
   types: {
     usernameNotInDB: function(value) {
-      //return false; 
       return uniqueUsername;
     },
     emailNotInDB: function(value) {
-      //return false; 
       return uniqueEmail;
     }
   },

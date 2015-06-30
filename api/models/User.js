@@ -5,9 +5,26 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+
+var uniqueUsername = false;
+var uniqueEmail = false; 
+
+
 module.exports = {
 
 	schema: true,
+
+  //custom validation types
+  types: {
+    usernameNotInDB: function(value) {
+      //return false; 
+      return uniqueUsername;
+    },
+    emailNotInDB: function(value) {
+      //return false; 
+      return uniqueEmail;
+    }
+  },
 
   attributes: {
 
@@ -18,6 +35,7 @@ module.exports = {
   		minLength: 3,
   		maxLength: 16,
   		unique: true,
+      usernameNotInDB: true,
   		regex: /^[a-z0-9_-]{3,16}$/
 
   	},
@@ -29,38 +47,44 @@ module.exports = {
 
   	email: {
   		type: 'string',
+      required: true,
   		lowercase: true,
   		email: true,
-  		unique: true
-  	}
+  		unique: true,
+      emailNotInDB: true,
+   	}
   },
 
-  //lifecycle callback that checks to make sure the new user username 
-  //and email are not arlready in the database.
-  afterValidate: function(newUser, cb) {
+  // lifecycle callback that checks to make sure the new users username 
+  // and email are not arlready in the database
+  beforeValidate: function(newUser, cb) {
+    // search for a duplicate username or a duplicate email
     User.findOne({
       or: [
         {username: newUser.username},
         {email: newUser.email}
       ]
     })
-    .then(function(user) {
-      var err;
-      if(user && user.username === newUser.username) {
-        err = {error: "Username already in use", status: 400};
-        return cb(err); 
-      } else if(user && user.email === newUser.email) {
-        err = {error: "Email already in use", status: 400};
-        return cb(err); 
-      } else {
-        return cb(); 
-      }
-          
-    })
-    .catch(function(err) {
-      cb(err);
-    });
+    .exec(function(err, user) {
 
+      //if there was an error in the search return it
+      if(err) return cb(err);
+      
+      //if there is a matching username or email take note 
+      if(user) {
+        uniqueUsername = user.username !== newUser.username; 
+        uniqueEmail = user.email !== newUser.email; 
+
+      //if no user was found at all then all fields are go
+      } else {
+        uniqueUsername = true; 
+        uniqueEmail = true; 
+      }
+      
+      //continue to validatoins
+      return cb();
+    });
+ 
   }
 
 };

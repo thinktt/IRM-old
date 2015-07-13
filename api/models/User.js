@@ -50,6 +50,8 @@ module.exports = {
   		unique: true,
       emailNotInDB: true
    	}
+
+
   },
 
   // lifecycle callback that checks to make sure the new users username 

@@ -9,11 +9,75 @@ module.exports = {
 	schema: true,
 
   attributes: {
-  	text: {
-  		type: 'string',
-  		required: true,
-  		unique: true
-  	}
+  
+  	reportedBy: {
+  		model: 'user',
+  		required: true
+  	},
+
+  	date: {
+  		type: 'date'
+  	},
+
+  	time:  {
+  		type: 'time'
+  	},
+
+  	worker: {
+  		type: 'string'
+  	},
+
+  	workerID : {
+  		type: 'string'
+  	},
+
+  	fromLab: {
+  		type: 'string'
+  	},
+
+  	station: {
+  		type: 'string'
+  	},
+
+  	shiftStart: {
+  		type: 'string'
+  	},
+
+  	shiftArrive: {
+  		type: 'string'
+  	},
+
+  	arrivalStatus: {
+  		type: 'string'
+  	},
+
+  	type: {
+  		type: 'string'
+  	},
+
+  	openStatus: {
+  		type: 'string'
+  	},
+
+  	emailSent: {
+  		type: 'string'
+  	},
+
+  	called: {
+  		type: 'string'
+  	},
+
+  	reason: {
+  		type: 'string'
+  	},
+
+  	status: {
+  		type: 'string'
+  	},
+
+  	metingDate: {
+  		type: 'string'
+  	},
 
   }
 };

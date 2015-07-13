@@ -49,10 +49,10 @@ module.exports.policies = {
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
 
-  IncidentController: {
-    '*': false,
-    find: 'sessionAuth'
-  }
+  // IncidentController: {
+  //   '*': false,
+  //   find: 'sessionAuth'
+  // }
 
 
 

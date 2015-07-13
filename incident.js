@@ -73,16 +73,21 @@ app.config(['$routeProvider',
 
 
 //......................App Controllers.............................
-app.controller('NavCtrl', function($scope,  $location, authMgmt){
+app.controller('NavCtrl', function($scope,  $location, authMgmt, $http){
 
 	//bind the authMgmt user info to the local scope
 	$scope.user = authMgmt;
 
 	$scope.singOut = function(){
-		$scope.user.username = '';
-		$scope.user.isLeader = false;
-		$scope.user.isSuper = false; 
-		$location.path('/sing-in');
+		$http.post('/user/signOut').success(function(data, status) {
+			if(data === 'user signed out') {
+				$scope.user.username = '';
+				$scope.user.isLeader = false;
+				$scope.user.isSuper = false; 
+				$location.path('/sing-in');
+			}
+		});
+
 	};
 
 	$scope.isActive = function (viewLocation) { 
@@ -140,7 +145,7 @@ app.controller('SignInCtrl', function($scope,  $location, $http, authMgmt){
 		data.postId = 'logIn'; 
 		data = JSON.stringify(data);
 
-		$http.post('/login', data).success(function(data, status) {
+		$http.post('/user/signIn', data).success(function(data, status) {
 			if(data === 'user validated') {
 				authMgmt.username = $scope.username;
 				authMgmt.isLeader = true;
